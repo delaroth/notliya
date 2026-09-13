@@ -39,7 +39,8 @@ function resolveFile(cleanPath) {
   return null;
 }
 
-const server = http.createServer((req, res) => {
+// Master HTTP Request Handler (Vercel Serverless Function & Local Node Server)
+function requestHandler(req, res) {
   let reqPath = req.url.split('?')[0];
 
   // API router for location tracking & notifications
@@ -72,7 +73,6 @@ const server = http.createServer((req, res) => {
     const ext = path.extname(filePath).toLowerCase();
     const contentType = MIME_TYPES[ext] || 'application/octet-stream';
 
-    // Set caching headers: immutable for images, immediate revalidate for css/js
     const isImmutable = reqPath.startsWith('/images/') || reqPath.startsWith('/audio/');
     res.writeHead(200, {
       'Content-Type': contentType,
@@ -99,7 +99,7 @@ const server = http.createServer((req, res) => {
           res.end(fs.readFileSync(c, 'utf8'));
           return;
         }
-      } catch(e) {}
+      } catch (e) {}
     }
   }
 
@@ -117,18 +117,22 @@ const server = http.createServer((req, res) => {
           res.end(fs.readFileSync(c, 'utf8'));
           return;
         }
-      } catch(e) {}
+      } catch (e) {}
     }
   }
 
   // 404 Fallback
   res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
   res.end('<h1>404 Not Found</h1><p>The page or asset does not exist.</p>');
-});
+}
 
-server.listen(PORT, () => {
-  console.log(`\n✨ @not.liya Website server running at: http://localhost:${PORT}\n`);
-});
+// If executed directly (local dev), start local http server
+if (require.main === module || !process.env.VERCEL) {
+  const server = http.createServer(requestHandler);
+  server.listen(PORT, () => {
+    console.log(`\n✨ @not.liya Website server running at: http://localhost:${PORT}\n`);
+  });
+}
 
-// Export server for Vercel Serverless Function runtime compatibility
-module.exports = server;
+// Vercel Serverless Function entrypoint: export requestHandler function directly!
+module.exports = requestHandler;
