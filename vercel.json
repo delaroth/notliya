@@ -1,4 +1,6 @@
 {
   "version": 2,
-  "name": "notliya"
+  "name": "notliya",
+  "buildCommand": "echo 'Static site'",
+  "outputDirectory": "public"
 }
