@@ -780,18 +780,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Creator Banner in Header: Only visible if isVipParam is active and hasn't seen yet
+  // Location check (Israel Timezone / Locale detection)
+  function isVisitorInIsrael() {
+    try {
+      const tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || '').toLowerCase();
+      const lang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+      const isIsraelTz = tz.includes('jerusalem') || tz.includes('tel_aviv');
+      const isHebrewLang = lang.startsWith('he') || lang.startsWith('iw');
+      return isIsraelTz || isHebrewLang;
+    } catch(e) {
+      return true;
+    }
+  }
+
+  // Creator Banner in Header: Only visible if specifically opening VIP link in Israel
   const creatorBannerContainer = document.getElementById('creatorBannerContainer');
-  if (creatorBannerContainer && isVipParam && !hasSeenLetter) {
-    creatorBannerContainer.style.display = 'block';
+  if (creatorBannerContainer) {
+    if (isVipParam && isVisitorInIsrael() && !hasSeenLetter && !isCreator) {
+      creatorBannerContainer.style.display = 'block';
+    } else {
+      creatorBannerContainer.style.display = 'none';
+    }
   }
 
   // First-view automatic popup:
-  // If visited with ?to=liya or ?vip, and hasn't seen yet and not in creator mode
-  if ((isVipParam || (!isCreator && !hasSeenLetter && !localStorage.getItem('liya_visited_once'))) && !hasSeenLetter) {
+  // ONLY fires if:
+  // 1. Visited with VIP param (?to=liya or ?vip or ?for=liya)
+  // 2. AND located in Israel (Asia/Jerusalem timezone or Hebrew locale)
+  // 3. AND not marked as creator mode (Levi browsing normally is 100% safe)
+  // 4. AND not previously seen
+  if (isVipParam && isVisitorInIsrael() && !hasSeenLetter && !isCreator) {
     setTimeout(() => {
       openLiyaModal();
-      localStorage.setItem('liya_visited_once', 'true');
     }, 700);
   }
 
