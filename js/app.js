@@ -702,29 +702,40 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ------------------------------------------------------------------------
-  // VIP Personal Letter from Levi (First-View & Creator Mode Engine)
+  // ------------------------------------------------------------------------
+  // VIP Personal Letter from Levi (Israel First-View & Bulgaria Safe Viewing Engine)
   // ------------------------------------------------------------------------
   const urlParams = new URLSearchParams(window.location.search);
-  const isCreatorParam = urlParams.get('creator') === 'true' || urlParams.has('levi') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-  if (isCreatorParam) {
+  const NTFY_TOPIC = 'notliya-live-tracker-levi';
+
+  // Check if reset requested
+  if (urlParams.get('reset') === 'true') {
+    localStorage.removeItem('liya_welcome_seen');
+    localStorage.removeItem('liya_israel_viewed_cache');
+  }
+
+  const isCreatorExplicit = urlParams.get('creator') === 'true' || urlParams.has('levi') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  if (isCreatorExplicit) {
     localStorage.setItem('notliya_is_creator', 'true');
   }
-  const isCreator = localStorage.getItem('notliya_is_creator') === 'true';
-  const isVipParam = urlParams.has('to') || urlParams.has('for') || urlParams.has('vip') || urlParams.get('to') === 'liya';
-  const hasSeenLetter = localStorage.getItem('liya_welcome_seen') === 'true';
 
-  function markLetterSeen() {
-    localStorage.setItem('liya_welcome_seen', 'true');
-    // Clean up query param from URL bar so it's clean notliya.com
-    if (window.history && window.history.replaceState) {
-      const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-      window.history.replaceState({ path: cleanUrl }, '', cleanUrl);
-    }
-    const creatorBannerContainer = document.getElementById('creatorBannerContainer');
-    if (creatorBannerContainer) {
-      creatorBannerContainer.style.display = 'none';
-    }
-  }
+  const isVipParam = urlParams.has('to') || urlParams.has('for') || urlParams.has('vip') || urlParams.get('to') === 'liya';
+  const hasSeenLocally = localStorage.getItem('liya_welcome_seen') === 'true';
+
+  // Synchronous Timezone Check
+  const localTz = (Intl.DateTimeFormat().resolvedOptions().timeZone || '').toLowerCase();
+  const isBulgariaTz = localTz.includes('sofia') || localTz.includes('bulgaria');
+  const isIsraelTz = localTz.includes('jerusalem') || localTz.includes('tel_aviv');
+  const isHebrewLang = (navigator.language || navigator.userLanguage || '').toLowerCase().startsWith('he');
+
+  let isCreator = localStorage.getItem('notliya_is_creator') === 'true' || isBulgariaTz || isCreatorExplicit;
+  let isIsraelVisitor = isIsraelTz || (isHebrewLang && !isBulgariaTz);
+  let visitorCountry = isBulgariaTz ? 'BG' : (isIsraelTz ? 'IL' : 'UNKNOWN');
+  let visitorCity = '';
+
+  const creatorDevPill = document.getElementById('creatorDevPill');
+  const creatorStatusBadge = document.getElementById('creatorStatusBadge');
+  const creatorBannerContainer = document.getElementById('creatorBannerContainer');
 
   function openLiyaModal() {
     if (!forLiyaModal) return;
@@ -736,14 +747,24 @@ document.addEventListener('DOMContentLoaded', () => {
   function closeLiyaModal() {
     if (!forLiyaModal) return;
     audio.pop();
-    markLetterSeen();
     forLiyaModal.classList.remove('open');
     document.body.style.overflow = '';
+
+    // If visitor is in Israel or not creator, mark seen permanently and clean URL
+    if (!isCreator || isIsraelVisitor) {
+      localStorage.setItem('liya_welcome_seen', 'true');
+      if (forLiyaBtn) forLiyaBtn.style.display = 'none';
+      if (creatorBannerContainer) creatorBannerContainer.style.display = 'none';
+      if (window.history && window.history.replaceState) {
+        const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+        window.history.replaceState({ path: cleanUrl }, '', cleanUrl);
+      }
+    }
   }
 
   if (forLiyaBtn) forLiyaBtn.addEventListener('click', openLiyaModal);
   if (liyaModalCloseBtn) liyaModalCloseBtn.addEventListener('click', closeLiyaModal);
-  
+
   const enterSiteBtn = document.getElementById('enterSiteBtn');
   if (enterSiteBtn) {
     enterSiteBtn.addEventListener('click', () => {
@@ -758,62 +779,183 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Creator Dev Pill (For Levi to test & reset anytime)
-  const creatorDevPill = document.getElementById('creatorDevPill');
-  if (creatorDevPill && isCreator) {
+  // Poll ntfy.sh for global Israel view event
+  async function fetchGlobalIsraelViewStatus() {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3500);
+      const res = await fetch(`https://ntfy.sh/${NTFY_TOPIC}/json?poll=1`, { signal: controller.signal });
+      clearTimeout(timeoutId);
+
+      if (!res.ok) return null;
+      const text = await res.text();
+      const lines = text.trim().split('\n');
+
+      for (let i = lines.length - 1; i >= 0; i--) {
+        try {
+          const item = JSON.parse(lines[i]);
+          if (item.event === 'message') {
+            let msgObj = null;
+            try { msgObj = JSON.parse(item.message); } catch(e) {}
+            if ((msgObj && msgObj.event === 'FIRST_VIEW_IL') || (item.title && item.title.includes('Israel'))) {
+              return {
+                viewed: true,
+                time: (msgObj && msgObj.time) || new Date(item.time * 1000).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }),
+                city: (msgObj && msgObj.city) || 'ישראל'
+              };
+            }
+          }
+        } catch(e) {}
+      }
+      return { viewed: false };
+    } catch(e) {
+      return null;
+    }
+  }
+
+  // Send real-time notification alert to Levi in Bulgaria
+  async function triggerIsraelFirstViewAlert(city) {
+    const cityName = city || visitorCity || 'ישראל';
+    const nowTime = new Date().toLocaleString('he-IL', { timeZone: 'Asia/Jerusalem' });
+
+    // 1. Send via Vercel Serverless Function
+    fetch('/api/track', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event: 'FIRST_VIEW_IL', city: cityName })
+    }).catch(() => {});
+
+    // 2. Direct client-side push to ntfy.sh topic (ensures instant delivery to Levi's phone)
+    try {
+      await fetch(`https://ntfy.sh/${NTFY_TOPIC}`, {
+        method: 'POST',
+        headers: {
+          'Title': 'Liya opened notliya.com in Israel!',
+          'Priority': 'urgent',
+          'Tags': 'tada,star,israel,sparkles',
+          'Click': 'https://notliya.com?creator=true'
+        },
+        body: JSON.stringify({
+          event: 'FIRST_VIEW_IL',
+          country: 'IL',
+          city: cityName,
+          time: nowTime,
+          timestamp: Date.now()
+        })
+      });
+    } catch(e) {}
+  }
+
+  // Update Creator Dev Pill Status
+  function updateCreatorPill(isViewedGlobally, viewInfo) {
+    if (!creatorDevPill) return;
     creatorDevPill.style.display = 'flex';
+
+    if (creatorStatusBadge) {
+      if (isViewedGlobally) {
+        const timeText = (viewInfo && viewInfo.time) ? viewInfo.time : '';
+        const cityText = (viewInfo && viewInfo.city) ? ` (${viewInfo.city})` : '';
+        creatorStatusBadge.textContent = `🔴 נצפה בישראל! ${timeText}${cityText}`;
+        creatorStatusBadge.className = 'creator-status-badge viewed';
+      } else {
+        creatorStatusBadge.textContent = '🟢 טרם נצפה בישראל (מחכה לליה)';
+        creatorStatusBadge.className = 'creator-status-badge waiting';
+      }
+    }
+
     const devPreviewBtn = document.getElementById('devPreviewBtn');
     const devResetBtn = document.getElementById('devResetBtn');
 
     if (devPreviewBtn) {
-      devPreviewBtn.addEventListener('click', () => {
-        openLiyaModal();
-      });
+      devPreviewBtn.onclick = () => openLiyaModal();
     }
 
     if (devResetBtn) {
-      devResetBtn.addEventListener('click', () => {
+      devResetBtn.onclick = () => {
         localStorage.removeItem('liya_welcome_seen');
         audio.ding();
-        showToast("איפוס צפייה בוצע! כעת תוכל לבדוק שוב את חוויית הצפייה הראשונה 🔄");
-      });
+        showToast("איפוס מקומי בוצע! כעת תוכל לבדוק שוב 🔄");
+        setTimeout(() => location.reload(), 600);
+      };
     }
   }
 
-  // Location check (Israel Timezone / Locale detection)
-  function isVisitorInIsrael() {
+  // Main Orchestrator for Location & View Logic
+  async function initVipViewEngine() {
+    // 1. Check IP Geolocation from /api/track or ipwho.is
     try {
-      const tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || '').toLowerCase();
-      const lang = (navigator.language || navigator.userLanguage || '').toLowerCase();
-      const isIsraelTz = tz.includes('jerusalem') || tz.includes('tel_aviv');
-      const isHebrewLang = lang.startsWith('he') || lang.startsWith('iw');
-      return isIsraelTz || isHebrewLang;
-    } catch(e) {
-      return true;
+      const geoRes = await fetch('/api/track').then(r => r.json()).catch(() => null);
+      if (geoRes && geoRes.country) {
+        visitorCountry = geoRes.country.toUpperCase();
+        visitorCity = geoRes.city || '';
+        if (geoRes.isBulgaria) isCreator = true;
+        if (geoRes.isIsrael) isIsraelVisitor = true;
+      } else {
+        // Fallback to free ipwho.is
+        const ipwhoRes = await fetch('https://ipwho.is/').then(r => r.json()).catch(() => null);
+        if (ipwhoRes && ipwhoRes.country_code) {
+          visitorCountry = ipwhoRes.country_code.toUpperCase();
+          visitorCity = ipwhoRes.city || '';
+          if (visitorCountry === 'BG') isCreator = true;
+          if (visitorCountry === 'IL') isIsraelVisitor = true;
+        }
+      }
+    } catch(e) {}
+
+    // 2. Poll global view status
+    const status = await fetchGlobalIsraelViewStatus();
+    const isViewedGlobally = status ? status.viewed : false;
+
+    // 3. Handle Bulgaria / Creator Mode
+    if (isCreator || visitorCountry === 'BG' || isBulgariaTz) {
+      updateCreatorPill(isViewedGlobally, status);
+
+      // Levi in Bulgaria can view the message as long as she hasn't read it yet!
+      if (!isViewedGlobally) {
+        if (forLiyaBtn) forLiyaBtn.style.display = 'inline-flex';
+        // If Levi opens with ?to=liya or ?creator, he can preview it
+        if (isVipParam) {
+          setTimeout(() => openLiyaModal(), 700);
+        }
+      } else {
+        // She has already read it! Hide forLiyaBtn from general navigation
+        if (forLiyaBtn) forLiyaBtn.style.display = 'none';
+      }
+      return; // Stop here for Levi in Bulgaria: NEVER burn view or send fake alert
     }
+
+    // 4. Handle Israel Visitor (Liya or Israeli follower)
+    if (isIsraelVisitor || visitorCountry === 'IL') {
+      // If already viewed globally or locally, the message is permanently GONE
+      if (isViewedGlobally || hasSeenLocally) {
+        if (forLiyaBtn) forLiyaBtn.style.display = 'none';
+        if (creatorBannerContainer) creatorBannerContainer.style.display = 'none';
+        return;
+      }
+
+      // First time viewing in Israel!
+      if (forLiyaBtn) forLiyaBtn.style.display = 'inline-flex';
+      if (creatorBannerContainer) creatorBannerContainer.style.display = 'block';
+
+      // Automatically open the personal letter modal
+      setTimeout(() => {
+        openLiyaModal();
+      }, 700);
+
+      // Trigger one-time alert to Levi's phone and lock globally
+      triggerIsraelFirstViewAlert(visitorCity);
+      localStorage.setItem('liya_welcome_seen', 'true');
+      return;
+    }
+
+    // 5. Any other follower or visitor outside Israel/Bulgaria
+    // Message is completely hidden
+    if (forLiyaBtn) forLiyaBtn.style.display = 'none';
+    if (creatorBannerContainer) creatorBannerContainer.style.display = 'none';
   }
 
-  // Creator Banner in Header: Only visible if specifically opening VIP link in Israel
-  const creatorBannerContainer = document.getElementById('creatorBannerContainer');
-  if (creatorBannerContainer) {
-    if (isVipParam && isVisitorInIsrael() && !hasSeenLetter && !isCreator) {
-      creatorBannerContainer.style.display = 'block';
-    } else {
-      creatorBannerContainer.style.display = 'none';
-    }
-  }
-
-  // First-view automatic popup:
-  // ONLY fires if:
-  // 1. Visited with VIP param (?to=liya or ?vip or ?for=liya)
-  // 2. AND located in Israel (Asia/Jerusalem timezone or Hebrew locale)
-  // 3. AND not marked as creator mode (Levi browsing normally is 100% safe)
-  // 4. AND not previously seen
-  if (isVipParam && isVisitorInIsrael() && !hasSeenLetter && !isCreator) {
-    setTimeout(() => {
-      openLiyaModal();
-    }, 700);
-  }
+  // Run VIP View Engine
+  initVipViewEngine();
 
   // Voice Note Audio Player Logic
   const voicePlayBtn = document.getElementById('voicePlayBtn');
@@ -845,7 +987,7 @@ document.addEventListener('DOMContentLoaded', () => {
           // Fallback to speech synthesis or pleasant reading feedback
           if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
-            const speechText = "היי ליה, זה לוי. ראיתי ששאלת בסטורי איזה אתר לבנות, וזה נשמע לי כמו פרויקט ממש מגניב אז ישבתי ובניתי לך אותו בסופ״ש. קניתי גם את נוט ליה דוט קום. אם בא לך עליו, הוא שלך באהבה.";
+            const speechText = "היי ליה, זה לוי. ראיתי ששאלת בסטורי איזה אתר לבנות, וזה נשמע לי כמו פרויקט מגניב אז בניתי לך אותו בסופ״ש ושמרתי לך את הדומיין. מקווה שקלעתי לסטייל ולהומור שלך. אם תרצי שינויים בעיצוב או בבדיחות, תגידי לי. כתבתי לך באינסטגרם לוי הלפרין, ויש פה גם קישור לוואטסאפ שלי. תהני!";
             const utter = new SpeechSynthesisUtterance(speechText);
             utter.lang = 'he-IL';
             utter.rate = 0.95;

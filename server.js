@@ -14,11 +14,25 @@ const MIME_TYPES = {
   '.png': 'image/png',
   '.webp': 'image/webp',
   '.svg': 'image/svg+xml',
-  '.ico': 'image/x-icon'
+  '.ico': 'image/x-icon',
+  '.mp3': 'audio/mpeg'
 };
 
 const server = http.createServer((req, res) => {
   let reqPath = req.url.split('?')[0];
+
+  // API router for local testing
+  if (reqPath === '/api/track' || reqPath.startsWith('/api/track/')) {
+    const trackHandler = require('./api/track.js');
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', () => {
+      req.body = body;
+      trackHandler(req, res);
+    });
+    return;
+  }
+
   if (reqPath === '/' || reqPath === '') {
     reqPath = '/index.html';
   }

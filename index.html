@@ -474,7 +474,7 @@
     <div class="modal-card modal-card-vip">
       <button id="liyaModalCloseBtn" class="modal-close" aria-label="Close">✕</button>
       <div class="letter-top-row">
-        <span class="modal-pill">✉️ מכתב אישי מלוי</span>
+        <span class="modal-pill">✉️ מכתב אישי מלוי (@levi_halperin)</span>
         <span class="letter-stamp-pill">notliya.com</span>
       </div>
 
@@ -508,32 +508,45 @@
           ראיתי ששאלת בסטורי איזה אתר לבנות, וזה נשמע לי כמו פרויקט ממש מגניב – אז פשוט ישבתי ובניתי לך אותו בסופ״ש.
         </p>
         <p>
-          קניתי גם את הדומיין <strong>notliya.com</strong> כדי שאף אחד ברשת לא יחטוף לך אותו.
+          קניתי גם את הדומיין <strong>notliya.com</strong> כדי שיהיה שמור בשבילך ואף אחד ברשת לא יחטוף אותו.
         </p>
         <p>
-          רציתי שזה ירגיש 100% כמוך: הומור שחור, קפה קר, ואיורים מקוריים שלך במקום סתם אתר תדמית משעמם.
+          ממש מקווה שהצלחתי לקלוע לסטייל ולהומור שלך: קפה קר, ציניות בריאה ואיורים מקוריים שלך במקום סתם אתר תדמית משעמם.
         </p>
         <p class="letter-callout-text">
-          אם אהבת ובא לך את האתר – רק תשלחי לי הודעה באינסטגרם ואני מעביר לך באהבה את כל המפתחות, הניהול והדומיין בלי שום תנאים. תהני!
+          אם יש איזה שהם שינויים שתרצי לעשות בעיצוב, בבדיחות, בציטוטים או בקולבאקים שבאתר – רק תגידי לי ואשמח לעדכן הכל בדיוק לפי איך שבא לך!
+        </p>
+        <p>
+          אם אהבת ובא לך על האתר, הוא שלך באהבה גמורה – אני מעביר לך את כל המפתחות, הניהול והדומיין בלי שום תנאים.
+        </p>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">
+          כתבתי לך קודם באינסטגרם שפתחתי את זה, אז תוכלי פשוט לענות לי שם בפרטי. ואם תעדיפי לתקשר מחוץ לרשתות הציבוריות – שמתי פה גם קישור ישיר לוואטסאפ שלי.
         </p>
       </div>
 
       <div class="vip-buttons">
-        <a href="https://www.instagram.com/not.liya/" target="_blank" rel="noopener noreferrer" class="btn-hero-primary" style="justify-content: center;">
-          שלחי לי הודעה באינסטגרם 💌
-        </a>
-        <button id="enterSiteBtn" class="btn-hero-ghost" style="justify-content: center;">
+        <div class="vip-buttons-row">
+          <a href="https://ig.me/m/levi_halperin" target="_blank" rel="noopener noreferrer" class="btn-vip-ig">
+            <span>אינסטגרם @levi_halperin</span> 💌
+          </a>
+          <a href="https://wa.me/972509870248?text=%D7%94%D7%99%D7%99%20%D7%9C%D7%95%D7%99%2C%20%D7%A8%D7%90%D7%99%D7%AA%D7%99%20%D7%90%D7%AA%20notliya.com%20%E2%9C%A8" target="_blank" rel="noopener noreferrer" class="btn-vip-wa">
+            <span>וואטסאפ: 050-987-0248</span> 💬
+          </a>
+        </div>
+        <button id="enterSiteBtn" class="btn-hero-ghost" style="justify-content: center; width: 100%;">
           תודה, כנסי לאתר ✨
         </button>
       </div>
     </div>
   </div>
 
-  <!-- CREATOR DEV PILL (Only visible in Creator Mode for Levi) -->
+  <!-- CREATOR DEV PILL (Visible in Creator Mode or when viewing from Bulgaria) -->
   <div id="creatorDevPill" class="creator-dev-pill" style="display: none;">
-    <span class="creator-pill-tag">👑 לוי (מצב יוצר)</span>
-    <button id="devPreviewBtn" class="creator-pill-btn" title="צפייה במכתב של ליה">👁️ המכתב לליה</button>
-    <button id="devResetBtn" class="creator-pill-btn" title="איפוס כדי לבדוק צפייה ראשונה">🔄 איפוס צפייה</button>
+    <span class="creator-pill-tag">👑 לוי (בולגריה)</span>
+    <span id="creatorStatusBadge" class="creator-status-badge">⏳ בודק סטטוס...</span>
+    <button id="devPreviewBtn" class="creator-pill-btn" title="צפייה במכתב של ליה">👁️ מכתב לליה</button>
+    <a href="https://ntfy.sh/notliya-live-tracker-levi" target="_blank" rel="noopener" class="creator-pill-btn creator-pill-link" title="קבלת התראת פוש כשלייה פותחת">🔔 התראות לנייד</a>
+    <button id="devResetBtn" class="creator-pill-btn" title="איפוס כדי לבדוק צפייה ראשונה">🔄 איפוס</button>
   </div>
 
   <!-- TOAST CONTAINER -->

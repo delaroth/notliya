@@ -1648,6 +1648,68 @@ img {
   color: var(--text-head);
 }
 
+/* VIP Buttons & Social Channels */
+.vip-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.vip-buttons-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+@media (max-width: 520px) {
+  .vip-buttons-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.btn-vip-ig {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+  color: #ffffff !important;
+  font-weight: 700;
+  font-size: 0.84rem;
+  padding: 10px 14px;
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(253, 29, 29, 0.3);
+  transition: transform var(--transition-fast), filter var(--transition-fast);
+}
+
+.btn-vip-ig:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+.btn-vip-wa {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #25D366;
+  color: #0b2e15 !important;
+  font-weight: 700;
+  font-size: 0.84rem;
+  padding: 10px 14px;
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
+  transition: transform var(--transition-fast), filter var(--transition-fast);
+}
+
+.btn-vip-wa:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+}
+
 /* Creator Dev Pill */
 .creator-dev-pill {
   position: fixed;
@@ -1674,6 +1736,28 @@ img {
 .creator-pill-tag {
   font-weight: 800;
   color: var(--accent-lilac);
+  white-space: nowrap;
+}
+
+.creator-status-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
+}
+
+.creator-status-badge.waiting {
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.15);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+}
+
+.creator-status-badge.viewed {
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.15);
+  border: 1px solid rgba(248, 113, 113, 0.3);
 }
 
 .creator-pill-btn {
@@ -1684,11 +1768,19 @@ img {
   border-radius: var(--radius-pill);
   font-size: 0.72rem;
   font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
 }
 
 .creator-pill-btn:hover {
   background: var(--accent-lilac);
-  color: #141316;
+  color: #141316 !important;
+}
+
+.creator-pill-link {
+  color: var(--accent-cream);
+  border-color: rgba(230, 213, 184, 0.3);
 }
 
 .modal-close {
