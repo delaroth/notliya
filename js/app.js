@@ -702,8 +702,30 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ------------------------------------------------------------------------
-  // VIP "Hey Liya!" Modal
+  // VIP Personal Letter from Levi (First-View & Creator Mode Engine)
   // ------------------------------------------------------------------------
+  const urlParams = new URLSearchParams(window.location.search);
+  const isCreatorParam = urlParams.get('creator') === 'true' || urlParams.has('levi') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  if (isCreatorParam) {
+    localStorage.setItem('notliya_is_creator', 'true');
+  }
+  const isCreator = localStorage.getItem('notliya_is_creator') === 'true';
+  const isVipParam = urlParams.has('to') || urlParams.has('for') || urlParams.has('vip') || urlParams.get('to') === 'liya';
+  const hasSeenLetter = localStorage.getItem('liya_welcome_seen') === 'true';
+
+  function markLetterSeen() {
+    localStorage.setItem('liya_welcome_seen', 'true');
+    // Clean up query param from URL bar so it's clean notliya.com
+    if (window.history && window.history.replaceState) {
+      const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+      window.history.replaceState({ path: cleanUrl }, '', cleanUrl);
+    }
+    const creatorBannerContainer = document.getElementById('creatorBannerContainer');
+    if (creatorBannerContainer) {
+      creatorBannerContainer.style.display = 'none';
+    }
+  }
+
   function openLiyaModal() {
     if (!forLiyaModal) return;
     audio.ding();
@@ -714,15 +736,116 @@ document.addEventListener('DOMContentLoaded', () => {
   function closeLiyaModal() {
     if (!forLiyaModal) return;
     audio.pop();
+    markLetterSeen();
     forLiyaModal.classList.remove('open');
     document.body.style.overflow = '';
   }
 
   if (forLiyaBtn) forLiyaBtn.addEventListener('click', openLiyaModal);
   if (liyaModalCloseBtn) liyaModalCloseBtn.addEventListener('click', closeLiyaModal);
+  
+  const enterSiteBtn = document.getElementById('enterSiteBtn');
+  if (enterSiteBtn) {
+    enterSiteBtn.addEventListener('click', () => {
+      closeLiyaModal();
+      showToast(state.lang === 'he' ? 'ברוכה הבאה לאתר שלך! ✨' : 'Welcome to your site! ✨');
+    });
+  }
+
   if (forLiyaModal) {
     forLiyaModal.addEventListener('click', (e) => {
       if (e.target === forLiyaModal) closeLiyaModal();
+    });
+  }
+
+  // Creator Dev Pill (For Levi to test & reset anytime)
+  const creatorDevPill = document.getElementById('creatorDevPill');
+  if (creatorDevPill && isCreator) {
+    creatorDevPill.style.display = 'flex';
+    const devPreviewBtn = document.getElementById('devPreviewBtn');
+    const devResetBtn = document.getElementById('devResetBtn');
+
+    if (devPreviewBtn) {
+      devPreviewBtn.addEventListener('click', () => {
+        openLiyaModal();
+      });
+    }
+
+    if (devResetBtn) {
+      devResetBtn.addEventListener('click', () => {
+        localStorage.removeItem('liya_welcome_seen');
+        audio.ding();
+        showToast("איפוס צפייה בוצע! כעת תוכל לבדוק שוב את חוויית הצפייה הראשונה 🔄");
+      });
+    }
+  }
+
+  // Creator Banner in Header: Only visible if isVipParam is active and hasn't seen yet
+  const creatorBannerContainer = document.getElementById('creatorBannerContainer');
+  if (creatorBannerContainer && isVipParam && !hasSeenLetter) {
+    creatorBannerContainer.style.display = 'block';
+  }
+
+  // First-view automatic popup:
+  // If visited with ?to=liya or ?vip, and hasn't seen yet and not in creator mode
+  if ((isVipParam || (!isCreator && !hasSeenLetter && !localStorage.getItem('liya_visited_once'))) && !hasSeenLetter) {
+    setTimeout(() => {
+      openLiyaModal();
+      localStorage.setItem('liya_visited_once', 'true');
+    }, 700);
+  }
+
+  // Voice Note Audio Player Logic
+  const voicePlayBtn = document.getElementById('voicePlayBtn');
+  const voicePlayIcon = document.getElementById('voicePlayIcon');
+  const creatorAudioEl = document.getElementById('creatorAudioEl');
+  const voiceNoteCard = document.querySelector('.voice-note-card');
+
+  if (voicePlayBtn && creatorAudioEl) {
+    let isPlayingVoice = false;
+
+    function stopVoice() {
+      isPlayingVoice = false;
+      if (voicePlayIcon) voicePlayIcon.textContent = '▶';
+      if (voiceNoteCard) voiceNoteCard.classList.remove('playing');
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    }
+
+    voicePlayBtn.addEventListener('click', () => {
+      if (isPlayingVoice) {
+        creatorAudioEl.pause();
+        stopVoice();
+      } else {
+        audio.pop();
+        creatorAudioEl.play().then(() => {
+          isPlayingVoice = true;
+          if (voicePlayIcon) voicePlayIcon.textContent = '⏸';
+          if (voiceNoteCard) voiceNoteCard.classList.add('playing');
+        }).catch(() => {
+          // Fallback to speech synthesis or pleasant reading feedback
+          if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const speechText = "היי ליה, זה לוי. ראיתי ששאלת בסטורי איזה אתר לבנות, וזה נשמע לי כמו פרויקט ממש מגניב אז ישבתי ובניתי לך אותו בסופ״ש. קניתי גם את נוט ליה דוט קום. אם בא לך עליו, הוא שלך באהבה.";
+            const utter = new SpeechSynthesisUtterance(speechText);
+            utter.lang = 'he-IL';
+            utter.rate = 0.95;
+            utter.onend = stopVoice;
+            utter.onerror = stopVoice;
+            isPlayingVoice = true;
+            if (voicePlayIcon) voicePlayIcon.textContent = '⏸';
+            if (voiceNoteCard) voiceNoteCard.classList.add('playing');
+            window.speechSynthesis.speak(utter);
+          } else {
+            audio.warmChime();
+            showToast("הטקסט המלא מופיע במכתב האישי ✍️");
+          }
+        });
+      }
+    });
+
+    creatorAudioEl.addEventListener('ended', stopVoice);
+    creatorAudioEl.addEventListener('pause', () => {
+      if (!creatorAudioEl.seeking) stopVoice();
     });
   }
 

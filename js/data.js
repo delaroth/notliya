@@ -20,6 +20,20 @@ const SITE_DATA = {
     statusEn: "Awake at 3 AM, bed-rotting"
   },
 
+  creatorLetter: {
+    author: "לוי",
+    authorEn: "Levi",
+    titleHe: "היי ליה, זה לוי 👋",
+    titleEn: "Hey Liya, it's Levi 👋",
+    subtitleHe: "מכתב אישי ממי שבנה לך את האתר",
+    subtitleEn: "A personal note from who built your site",
+    bodyHe: "ראיתי ששאלת בסטורי איזה אתר לבנות, וזה נשמע לי כמו פרויקט ממש מגניב – אז פשוט ישבתי בסופ״ש ובניתי לך אותו.\n\nקניתי גם את הדומיין notliya.com כדי שאף אחד ברשת לא יחטוף לך אותו.\n\nרציתי שזה ירגיש 100% כמוך: הומור שחור, קפה קר, ואיורים מקוריים שלך במקום סתם אתר תדמית משעמם.\n\nאם אהבת ובא לך את האתר – רק תשלחי לי הודעה באינסטגרם ואני מעביר לך באהבה את כל המפתחות, הניהול והדומיין בלי שום תנאים. תהני!",
+    bodyEn: "Saw your story asking what site to build, and it sounded like such a fun project — so I sat down over the weekend and built one for you.\n\nI also bought notliya.com so nobody else takes it.\n\nWanted it to feel 100% like you: dark humor, iced coffee, and original custom artwork rather than a boring corporate template.\n\nIf you like it and want the site — just shoot me a DM on Instagram and I'll gladly hand over full keys, ownership, and the domain with no strings attached. Enjoy!",
+    audioSrc: "audio/voice_note.mp3",
+    audioDuration: "0:24",
+    dmUrl: "https://www.instagram.com/not.liya/"
+  },
+
   themes: [
     {
       id: "emo",

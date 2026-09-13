@@ -95,15 +95,15 @@
     </div>
   </header>
 
-  <!-- PERSONAL CREATOR NOTE BANNER (Individual to Creator) -->
-  <div class="container" style="margin-top: 1.5rem;">
-    <div class="creator-note-banner">
+  <!-- PERSONAL CREATOR NOTE BANNER (Hidden by default for followers, shown only on VIP link) -->
+  <div id="creatorBannerContainer" class="container" style="margin-top: 1.5rem; display: none;">
+    <div id="creatorNoteBanner" class="creator-note-banner">
       <div class="creator-note-header">
-        <span class="creator-badge" data-i18n="creatorNoteBadge">הערה אישית ממי שבנה את האתר ✍️</span>
+        <span class="creator-badge" data-i18n="creatorNoteBadge">מכתב אישי מלוי ✍️</span>
         <button class="creator-note-dismiss" id="dismissNoteBtn" title="Dismiss">✕</button>
       </div>
       <p class="creator-note-text" data-i18n="creatorNoteText">
-        היי ליה, ראיתי ששאלת בסטורי איזה אתר לבנות, וזה נשמע לי כמו פרויקט ממש מעניין אז פשוט ישבתי ובניתי לך אותו. קניתי גם את notliya.com כי חבל שיתפסו אותו. אם בא לך עליו – רק תגידי, אני מעביר לך את כל הגישה והמפתחות באהבה.
+        היי ליה, זה לוי. ראיתי ששאלת בסטורי איזה אתר לבנות, וזה נשמע לי כמו פרויקט ממש מגניב אז פשוט ישבתי ובניתי לך אותו בסופ״ש. קניתי גם את notliya.com כי חבל שמישהו יחטוף אותו. אם בא לך עליו – רק תגידי, אני מעביר לך את כל הגישה והמפתחות באהבה.
       </p>
     </div>
   </div>
@@ -469,26 +469,71 @@
     </div>
   </div>
 
-  <!-- MODAL: VIP FOR LIYA (DIRECT CREATOR OFFER) -->
+  <!-- MODAL: VIP FOR LIYA (DIRECT CREATOR LETTER FROM LEVI) -->
   <div id="forLiyaModal" class="modal-backdrop" role="dialog" aria-modal="true">
     <div class="modal-card modal-card-vip">
       <button id="liyaModalCloseBtn" class="modal-close" aria-label="Close">✕</button>
-      <span class="modal-pill" style="margin-bottom: 1rem;">🔑 ליה, האתר הזה שלך!</span>
-      <h2 style="font-size: 1.8rem; font-weight: 900; margin-bottom: 0.75rem; color: var(--text-head);">בניתי את זה בשבילך ✨</h2>
-      <p style="color: var(--text-body); font-size: 0.95rem; line-height: 1.7; margin-bottom: 1.5rem;">
-        ראיתי שביקשת מהעוקבים רעיונות לאתר, וזה נשמע לי כמו פרויקט ממש מעניין אז פשוט ישבתי ובניתי לך אותו. קניתי גם את הדומיין <strong>notliya.com</strong> כדי שאף אחד לא יתפוס אותו.
-        <br/><br/>
-        אם בא לך עליו – רק תגידי, אני מעביר לך את כל הגישה, הניהול והמפתחות באהבה ובלי שום תנאים.
-      </p>
-      <div class="vip-buttons" style="display: flex; flex-direction: column; gap: 0.75rem;">
+      <div class="letter-top-row">
+        <span class="modal-pill">✉️ מכתב אישי מלוי</span>
+        <span class="letter-stamp-pill">notliya.com</span>
+      </div>
+
+      <h2 class="letter-heading-vip">היי ליה, זה לוי 👋</h2>
+
+      <!-- Voice Note Audio Player -->
+      <div class="voice-note-card">
+        <button id="voicePlayBtn" class="voice-play-btn" title="האזנה להודעה קולית">
+          <span id="voicePlayIcon">▶</span>
+        </button>
+        <div class="voice-wave-wrap">
+          <div class="voice-wave-bars">
+            <span class="v-bar" style="height: 10px;"></span>
+            <span class="v-bar" style="height: 22px;"></span>
+            <span class="v-bar" style="height: 14px;"></span>
+            <span class="v-bar" style="height: 28px;"></span>
+            <span class="v-bar" style="height: 18px;"></span>
+            <span class="v-bar" style="height: 24px;"></span>
+            <span class="v-bar" style="height: 12px;"></span>
+            <span class="v-bar" style="height: 20px;"></span>
+            <span class="v-bar" style="height: 16px;"></span>
+            <span class="v-bar" style="height: 22px;"></span>
+          </div>
+          <span id="voiceTimeLabel" class="voice-time">0:24 • הקלטה קולית מלוי</span>
+        </div>
+        <audio id="creatorAudioEl" src="audio/voice_note.mp3" preload="none"></audio>
+      </div>
+
+      <div class="letter-text-block">
+        <p>
+          ראיתי ששאלת בסטורי איזה אתר לבנות, וזה נשמע לי כמו פרויקט ממש מגניב – אז פשוט ישבתי ובניתי לך אותו בסופ״ש.
+        </p>
+        <p>
+          קניתי גם את הדומיין <strong>notliya.com</strong> כדי שאף אחד ברשת לא יחטוף לך אותו.
+        </p>
+        <p>
+          רציתי שזה ירגיש 100% כמוך: הומור שחור, קפה קר, ואיורים מקוריים שלך במקום סתם אתר תדמית משעמם.
+        </p>
+        <p class="letter-callout-text">
+          אם אהבת ובא לך את האתר – רק תשלחי לי הודעה באינסטגרם ואני מעביר לך באהבה את כל המפתחות, הניהול והדומיין בלי שום תנאים. תהני!
+        </p>
+      </div>
+
+      <div class="vip-buttons">
         <a href="https://www.instagram.com/not.liya/" target="_blank" rel="noopener noreferrer" class="btn-hero-primary" style="justify-content: center;">
           שלחי לי הודעה באינסטגרם 💌
         </a>
-        <button id="copySiteLinkBtn" class="btn-hero-ghost" style="justify-content: center;">
-          העתיקי קישור לסטורי 🤳
+        <button id="enterSiteBtn" class="btn-hero-ghost" style="justify-content: center;">
+          תודה, כנסי לאתר ✨
         </button>
       </div>
     </div>
+  </div>
+
+  <!-- CREATOR DEV PILL (Only visible in Creator Mode for Levi) -->
+  <div id="creatorDevPill" class="creator-dev-pill" style="display: none;">
+    <span class="creator-pill-tag">👑 לוי (מצב יוצר)</span>
+    <button id="devPreviewBtn" class="creator-pill-btn" title="צפייה במכתב של ליה">👁️ המכתב לליה</button>
+    <button id="devResetBtn" class="creator-pill-btn" title="איפוס כדי לבדוק צפייה ראשונה">🔄 איפוס צפייה</button>
   </div>
 
   <!-- TOAST CONTAINER -->
