@@ -3,19 +3,68 @@
   "name": "notliya",
   "cleanUrls": true,
   "trailingSlash": false,
+  "public": true,
+  "buildCommand": "npm run build",
+  "outputDirectory": ".",
   "routes": [
     {
-      "src": "/images/(.*)",
-      "headers": { "cache-control": "public, max-age=31536000, immutable" },
-      "dest": "/images/$1"
+      "src": "^/css/(.*)$",
+      "dest": "/css/$1",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      }
     },
     {
-      "src": "/api/(.*)",
+      "src": "^/js/(.*)$",
+      "dest": "/js/$1",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "^/images/(.*)$",
+      "dest": "/images/$1",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "^/audio/(.*)$",
+      "dest": "/audio/$1",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "^/avatar\\.jpg$",
+      "dest": "/avatar.jpg",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "^/notliya-cloudflare-dns\\.txt$",
+      "dest": "/notliya-cloudflare-dns.txt"
+    },
+    {
+      "src": "^/content_data\\.json$",
+      "dest": "/content_data.json"
+    },
+    {
+      "src": "^/posts_data\\.json$",
+      "dest": "/posts_data.json"
+    },
+    {
+      "src": "^/api/(.*)$",
       "dest": "/api/$1"
     },
     {
-      "src": "/(.*)",
-      "dest": "/$1"
+      "src": "^/(.*)\\.html$",
+      "dest": "/$1.html"
+    },
+    {
+      "src": "^/(?!api|css|js|images|audio|.*\\.).*$",
+      "dest": "/index.html"
     }
   ]
 }
