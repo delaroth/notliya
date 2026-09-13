@@ -2,9 +2,10 @@
   "name": "not-liya-website",
   "version": "1.0.0",
   "description": "Custom interactive website themed and built for influencer @not.liya",
+  "main": "server.js",
   "scripts": {
-    "dev": "node local-server.js",
-    "start": "node local-server.js"
+    "start": "node server.js",
+    "dev": "node server.js"
   },
   "keywords": [
     "not.liya",
