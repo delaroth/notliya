@@ -17,6 +17,36 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Heebo:wght@300;400;500;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
+  <!-- PostHog Advanced Analytics & Session Replay -->
+  <script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}var q=["capture","identify","alias","people.set","people.set_once","set_config","register","register_once","unregister","opt_out_capturing","has_opted_out_capturing","opt_in_capturing","reset","isFeatureEnabled","onFeatureFlags","getFeatureFlag","getFeatureFlagPayload","reloadFeatureFlags","group","updateEarlyAccessFeatureEnrollment","getEarlyAccessFeatures","getSurveys","getActiveMatchingSurveys","renderSurvey","canRenderSurvey","getNextSurveyStep","identifyCommunityUser"];for(p=0;p<q.length;p++)g(e,q[p]);t.people=t.people||[],t.toString=function(t){var e="posthog";return"segment"!==t&&(e+="."+t),e},t.setUserProperties=function(t){e.people.set(t)},e.unshift=function(e){t.unshift(e)},e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    (function() {
+      try {
+        var urlParams = new URLSearchParams(window.location.search);
+        var urlKey = urlParams.get('posthog_key');
+        if (urlKey) localStorage.setItem('posthog_project_key', urlKey);
+
+        var projectKey = window.POSTHOG_API_KEY || localStorage.getItem('posthog_project_key');
+        var apiHost = localStorage.getItem('posthog_host') || 'https://eu.i.posthog.com';
+
+        if (projectKey && projectKey.startsWith('phc_')) {
+          window.posthog.init(projectKey, {
+            api_host: apiHost,
+            person_profiles: 'always',
+            autocapture: true,
+            capture_pageview: true,
+            capture_pageleave: true,
+            session_recording: {
+              recordCrossOriginIframes: true,
+              maskAllInputs: false
+            }
+          });
+          window._posthogReady = true;
+        }
+      } catch(e) {}
+    })();
+  </script>
+
   <!-- Stylesheet -->
   <link rel="stylesheet" href="/css/style.css?v=2" />
   <style id="embeddedStyles">
@@ -2527,6 +2557,7 @@ img {
     <span class="creator-pill-tag">👑 לוי (בולגריה)</span>
     <span id="creatorStatusBadge" class="creator-status-badge">⏳ בודק סטטוס...</span>
     <button id="devPreviewBtn" class="creator-pill-btn" title="צפייה במכתב של ליה">👁️ מכתב לליה</button>
+    <button id="devPosthogBtn" class="creator-pill-btn" title="הגדרות PostHog וצפייה בהקלטות">📊 PostHog</button>
     <a href="https://ntfy.sh/notliya-live-tracker-levi" target="_blank" rel="noopener" class="creator-pill-btn creator-pill-link" title="קבלת התראת פוש כשלייה פותחת">🔔 התראות לנייד</a>
     <button id="devResetBtn" class="creator-pill-btn" title="איפוס כדי לבדוק צפייה ראשונה">🔄 איפוס</button>
   </div>

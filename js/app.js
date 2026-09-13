@@ -185,6 +185,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const currentThemeObj = SITE_DATA.themes.find(t => t.id === themeId);
       const themeName = state.lang === 'he' ? currentThemeObj.nameHe : currentThemeObj.nameEn;
       showToast(state.lang === 'he' ? `ערכת נושא: ${themeName} ✨` : `Theme: ${themeName} ✨`);
+      if (window.Telemetry && typeof window.Telemetry.trackThemeChange === 'function') {
+        window.Telemetry.trackThemeChange(themeId);
+      }
     }
   }
 
@@ -493,6 +496,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     reelModal.classList.add('open');
     document.body.style.overflow = 'hidden';
+
+    if (window.Telemetry && typeof window.Telemetry.trackPhotoOpen === 'function') {
+      window.Telemetry.trackPhotoOpen(title || post.id || post.image);
+    }
   }
 
   function closeReelModal() {
@@ -765,12 +772,283 @@ document.addEventListener('DOMContentLoaded', () => {
   if (forLiyaBtn) forLiyaBtn.addEventListener('click', openLiyaModal);
   if (liyaModalCloseBtn) liyaModalCloseBtn.addEventListener('click', closeLiyaModal);
 
+  // ------------------------------------------------------------------------
+  // ADVANCED TELEMETRY & BEHAVIOR TRACKING (Cookies, PostHog, Scroll & Dwell)
+  // ------------------------------------------------------------------------
+  const Telemetry = {
+    visitorId: '',
+    sessionId: '',
+    visitCount: 1,
+    isReturning: false,
+    activeSeconds: 0,
+    maxScrollDepth: 0,
+    actionsCount: 0,
+    scrollMilestonesSent: new Set(),
+    heartbeatsSent: new Set(),
+    sessionSummarySent: false,
+    timerInterval: null,
+
+    getCookie(name) {
+      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      return match ? decodeURIComponent(match[2]) : null;
+    },
+    setCookie(name, value, days = 365) {
+      const d = new Date();
+      d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+      document.cookie = `${name}=${encodeURIComponent(value)};expires=${d.toUTCString()};path=/;SameSite=Lax`;
+    },
+
+    formatDuration(seconds) {
+      if (seconds < 60) return `${seconds} שניות`;
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return secs > 0 ? `${mins} דק' ו-${secs} שנ'` : `${mins} דקות`;
+    },
+
+    init() {
+      // 1. Identify Visitor & Session across Cookies + LocalStorage
+      const storedVid = this.getCookie('notliya_vid') || localStorage.getItem('notliya_vid');
+      if (storedVid) {
+        this.visitorId = storedVid;
+      } else {
+        this.visitorId = 'usr_' + Date.now().toString(36) + '_' + Math.random().toString(36).substring(2, 7);
+        this.setCookie('notliya_vid', this.visitorId, 365);
+        try { localStorage.setItem('notliya_vid', this.visitorId); } catch(e) {}
+      }
+
+      // Session & Visit count detection
+      const lastActive = parseInt(localStorage.getItem('notliya_last_active') || '0', 10);
+      const now = Date.now();
+      const storedVisits = parseInt(localStorage.getItem('notliya_visits') || '1', 10);
+
+      if (!lastActive || (now - lastActive > 20 * 60 * 1000)) {
+        this.sessionId = 'ses_' + now.toString(36) + '_' + Math.random().toString(36).substring(2, 6);
+        try { sessionStorage.setItem('notliya_sid', this.sessionId); } catch(e) {}
+        this.visitCount = lastActive ? storedVisits + 1 : storedVisits;
+        try { localStorage.setItem('notliya_visits', this.visitCount.toString()); } catch(e) {}
+      } else {
+        this.sessionId = sessionStorage.getItem('notliya_sid') || ('ses_' + now.toString(36));
+        this.visitCount = storedVisits;
+      }
+      this.isReturning = this.visitCount > 1;
+      try { localStorage.setItem('notliya_last_active', now.toString()); } catch(e) {}
+
+      // 2. Sync with PostHog
+      this.syncPostHog();
+
+      // 3. Start Active Dwell-Time Tracking (ticks only when page is visible)
+      this.startActiveTimer();
+
+      // 4. Start Scroll Depth Tracking
+      this.startScrollDepthTracker();
+
+      // 5. Setup Exit Beacon for Session Summary
+      this.setupExitBeacon();
+    },
+
+    syncPostHog() {
+      if (window.posthog && typeof window.posthog.identify === 'function') {
+        window.posthog.identify(this.visitorId, {
+          visit_count: this.visitCount,
+          is_returning: this.isReturning,
+          country: visitorCountry,
+          city: visitorCity,
+          is_israel: isIsraelVisitor,
+          is_creator: isCreator
+        });
+      }
+    },
+
+    startActiveTimer() {
+      if (this.timerInterval) clearInterval(this.timerInterval);
+      this.timerInterval = setInterval(() => {
+        if (!document.hidden) {
+          this.activeSeconds++;
+          try { localStorage.setItem('notliya_last_active', Date.now().toString()); } catch(e) {}
+
+          // Heartbeats at 30s, 60s, 120s, 300s
+          const heartbeats = [30, 60, 120, 300];
+          for (const hb of heartbeats) {
+            if (this.activeSeconds >= hb && !this.heartbeatsSent.has(hb)) {
+              this.heartbeatsSent.add(hb);
+              this.sendBeaconEvent({
+                event: 'HEARTBEAT',
+                durationSec: this.activeSeconds,
+                durationFormatted: this.formatDuration(this.activeSeconds),
+                maxScroll: this.maxScrollDepth,
+                actionsCount: this.actionsCount
+              });
+              if (window.posthog && typeof window.posthog.capture === 'function') {
+                window.posthog.capture('heartbeat_milestone', {
+                  seconds: hb,
+                  max_scroll: this.maxScrollDepth
+                });
+              }
+            }
+          }
+        }
+      }, 1000);
+    },
+
+    startScrollDepthTracker() {
+      let scrollTimeout = null;
+      const onScroll = () => {
+        if (scrollTimeout) return;
+        scrollTimeout = setTimeout(() => {
+          scrollTimeout = null;
+          const scrollY = window.scrollY || window.pageYOffset || 0;
+          const windowHeight = window.innerHeight || 1;
+          const docHeight = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight, 1);
+          const currentDepth = Math.min(100, Math.round(((scrollY + windowHeight) / docHeight) * 100));
+
+          if (currentDepth > this.maxScrollDepth) {
+            this.maxScrollDepth = currentDepth;
+          }
+
+          const milestones = [25, 50, 75, 100];
+          for (const m of milestones) {
+            if (this.maxScrollDepth >= m && !this.scrollMilestonesSent.has(m)) {
+              this.scrollMilestonesSent.add(m);
+              this.sendBeaconEvent({
+                event: 'SCROLL_DEPTH',
+                depth: m,
+                durationSec: this.activeSeconds,
+                durationFormatted: this.formatDuration(this.activeSeconds)
+              });
+              if (window.posthog && typeof window.posthog.capture === 'function') {
+                window.posthog.capture('scroll_milestone', {
+                  depth: m,
+                  active_seconds: this.activeSeconds
+                });
+              }
+            }
+          }
+        }, 200);
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+    },
+
+    trackThemeChange(themeId) {
+      this.actionsCount++;
+      const currentThemeObj = SITE_DATA.themes.find(t => t.id === themeId);
+      const themeName = state.lang === 'he' ? (currentThemeObj?.nameHe || themeId) : (currentThemeObj?.nameEn || themeId);
+      this.sendBeaconEvent({
+        event: 'THEME_CHANGE',
+        theme: themeId,
+        themeName,
+        durationSec: this.activeSeconds,
+        durationFormatted: this.formatDuration(this.activeSeconds)
+      });
+      if (window.posthog && typeof window.posthog.capture === 'function') {
+        window.posthog.capture('theme_changed', { theme_id: themeId, theme_name: themeName });
+      }
+    },
+
+    trackPhotoOpen(photoIdentifier) {
+      this.actionsCount++;
+      if (window.posthog && typeof window.posthog.capture === 'function') {
+        window.posthog.capture('photo_opened', { photo: photoIdentifier, duration_sec: this.activeSeconds });
+      }
+    },
+
+    trackVipClick(buttonName) {
+      this.actionsCount++;
+      this.sendBeaconEvent({
+        event: 'VIP_CLICK',
+        buttonName,
+        durationSec: this.activeSeconds,
+        durationFormatted: this.formatDuration(this.activeSeconds)
+      });
+      if (window.posthog && typeof window.posthog.capture === 'function') {
+        window.posthog.capture('vip_contact_clicked', { button: buttonName, active_seconds: this.activeSeconds });
+      }
+    },
+
+    sendBeaconEvent(payload) {
+      const data = {
+        visitorId: this.visitorId,
+        sessionId: this.sessionId,
+        visitCount: this.visitCount,
+        isReturning: this.isReturning,
+        city: visitorCity,
+        country: visitorCountry,
+        isCreator,
+        ...payload
+      };
+
+      try {
+        fetch('/api/track', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+          keepalive: true
+        }).catch(() => {});
+      } catch(e) {}
+    },
+
+    setupExitBeacon() {
+      const sendExitSummary = () => {
+        if (this.sessionSummarySent || this.activeSeconds < 3) return;
+        this.sessionSummarySent = true;
+        const summaryData = {
+          event: 'SESSION_SUMMARY',
+          visitorId: this.visitorId,
+          sessionId: this.sessionId,
+          visitCount: this.visitCount,
+          isReturning: this.isReturning,
+          durationSec: this.activeSeconds,
+          durationFormatted: this.formatDuration(this.activeSeconds),
+          maxScroll: this.maxScrollDepth,
+          actionsCount: this.actionsCount,
+          city: visitorCity,
+          country: visitorCountry,
+          isCreator
+        };
+
+        const jsonBlob = new Blob([JSON.stringify(summaryData)], { type: 'application/json' });
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon('/api/track', jsonBlob);
+        } else {
+          fetch('/api/track', { method: 'POST', body: jsonBlob, keepalive: true }).catch(() => {});
+        }
+
+        if (window.posthog && typeof window.posthog.capture === 'function') {
+          window.posthog.capture('session_summary', {
+            active_duration_sec: this.activeSeconds,
+            max_scroll_depth: this.maxScrollDepth,
+            actions_count: this.actionsCount
+          });
+        }
+      };
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') {
+          sendExitSummary();
+        }
+      });
+      window.addEventListener('pagehide', sendExitSummary);
+      window.addEventListener('beforeunload', sendExitSummary);
+    }
+  };
+  window.Telemetry = Telemetry;
+
   const enterSiteBtn = document.getElementById('enterSiteBtn');
   if (enterSiteBtn) {
     enterSiteBtn.addEventListener('click', () => {
       closeLiyaModal();
+      Telemetry.trackVipClick('כניסה לאתר');
       showToast(state.lang === 'he' ? 'ברוכה הבאה לאתר שלך! ✨' : 'Welcome to your site! ✨');
     });
+  }
+
+  const vipIgLink = document.querySelector('.btn-vip-ig');
+  if (vipIgLink) {
+    vipIgLink.addEventListener('click', () => Telemetry.trackVipClick('אינסטגרם @levi_halperin'));
+  }
+
+  const vipWaLink = document.querySelector('.btn-vip-wa');
+  if (vipWaLink) {
+    vipWaLink.addEventListener('click', () => Telemetry.trackVipClick('וואטסאפ לוי'));
   }
 
   if (forLiyaModal) {
@@ -816,34 +1094,19 @@ document.addEventListener('DOMContentLoaded', () => {
   // Send real-time notification alert to Levi in Bulgaria
   async function triggerIsraelFirstViewAlert(city) {
     const cityName = city || visitorCity || 'ישראל';
-    const nowTime = new Date().toLocaleString('he-IL', { timeZone: 'Asia/Jerusalem' });
+    Telemetry.sendBeaconEvent({
+      event: 'FIRST_VIEW_IL',
+      city: cityName
+    });
+  }
 
-    // 1. Send via Vercel Serverless Function
-    fetch('/api/track', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ event: 'FIRST_VIEW_IL', city: cityName })
-    }).catch(() => {});
-
-    // 2. Direct client-side push to ntfy.sh topic (ensures instant delivery to Levi's phone)
-    try {
-      await fetch(`https://ntfy.sh/${NTFY_TOPIC}`, {
-        method: 'POST',
-        headers: {
-          'Title': 'Liya opened notliya.com in Israel!',
-          'Priority': 'urgent',
-          'Tags': 'tada,star,israel,sparkles',
-          'Click': 'https://notliya.com?creator=true'
-        },
-        body: JSON.stringify({
-          event: 'FIRST_VIEW_IL',
-          country: 'IL',
-          city: cityName,
-          time: nowTime,
-          timestamp: Date.now()
-        })
-      });
-    } catch(e) {}
+  async function triggerIsraelReturningViewAlert(city, count) {
+    const cityName = city || visitorCity || 'ישראל';
+    Telemetry.sendBeaconEvent({
+      event: 'RETURNING_VIEW_IL',
+      city: cityName,
+      visitCount: count || 2
+    });
   }
 
   // Update Creator Dev Pill Status
@@ -852,27 +1115,60 @@ document.addEventListener('DOMContentLoaded', () => {
     creatorDevPill.style.display = 'flex';
 
     if (creatorStatusBadge) {
+      const phActive = window.POSTHOG_API_KEY || localStorage.getItem('posthog_project_key');
+      const phTag = phActive ? ' • PostHog 🟢' : '';
       if (isViewedGlobally) {
         const timeText = (viewInfo && viewInfo.time) ? viewInfo.time : '';
         const cityText = (viewInfo && viewInfo.city) ? ` (${viewInfo.city})` : '';
-        creatorStatusBadge.textContent = `🔴 נצפה בישראל! ${timeText}${cityText}`;
+        creatorStatusBadge.textContent = `🔴 נצפה בישראל! ${timeText}${cityText}${phTag}`;
         creatorStatusBadge.className = 'creator-status-badge viewed';
       } else {
-        creatorStatusBadge.textContent = '🟢 טרם נצפה בישראל (מחכה לליה)';
+        creatorStatusBadge.textContent = `🟢 טרם נצפה בישראל (מחכה לליה)${phTag}`;
         creatorStatusBadge.className = 'creator-status-badge waiting';
       }
     }
 
     const devPreviewBtn = document.getElementById('devPreviewBtn');
     const devResetBtn = document.getElementById('devResetBtn');
+    const devPosthogBtn = document.getElementById('devPosthogBtn');
 
     if (devPreviewBtn) {
       devPreviewBtn.onclick = () => openLiyaModal();
     }
 
+    if (devPosthogBtn) {
+      devPosthogBtn.onclick = () => {
+        const currentKey = localStorage.getItem('posthog_project_key') || '';
+        const host = localStorage.getItem('posthog_host') || 'https://eu.i.posthog.com';
+
+        let promptMsg = '';
+        if (currentKey) {
+          promptMsg = `PostHog מחובר ומקליט סשנים! 🎥\n\nProject API Key נוכחי:\n${currentKey}\n\n1. כדי לפתוח את לוח הבקרה וההקלטות ב-PostHog, לחץ OK בלי לשנות.\n2. כדי להחליף מפתח, הקלד מפתח חדש (מתחיל ב-phc_):`;
+        } else {
+          promptMsg = `הגדרת PostHog להקלטות וידאו של גלישת ליה ומעקב קליקים מלא:\n\nהדבק את ה-Project API Key מחשבון ה-PostHog שלך (מתחיל ב-phc_):`;
+        }
+
+        const res = prompt(promptMsg, currentKey);
+        if (res !== null) {
+          const trimmed = res.trim();
+          if (trimmed && trimmed.startsWith('phc_') && trimmed !== currentKey) {
+            localStorage.setItem('posthog_project_key', trimmed);
+            audio.ding();
+            alert('✅ PostHog הוגדר בהצלחה! האתר יטען מחדש כעת כדי להפעיל את המעקב.');
+            location.reload();
+          } else if (currentKey && trimmed === currentKey) {
+            const dashUrl = host.includes('eu') ? 'https://eu.posthog.com/' : 'https://us.posthog.com/';
+            window.open(dashUrl, '_blank');
+          }
+        }
+      };
+    }
+
     if (devResetBtn) {
       devResetBtn.onclick = () => {
         localStorage.removeItem('liya_welcome_seen');
+        localStorage.removeItem('notliya_visits');
+        localStorage.removeItem('notliya_last_active');
         audio.ding();
         showToast("איפוס מקומי בוצע! כעת תוכל לבדוק שוב 🔄");
         setTimeout(() => location.reload(), 600);
@@ -891,7 +1187,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (geoRes.isBulgaria) isCreator = true;
         if (geoRes.isIsrael) isIsraelVisitor = true;
       } else {
-        // Fallback to free ipwho.is
         const ipwhoRes = await fetch('https://ipwho.is/').then(r => r.json()).catch(() => null);
         if (ipwhoRes && ipwhoRes.country_code) {
           visitorCountry = ipwhoRes.country_code.toUpperCase();
@@ -906,30 +1201,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const status = await fetchGlobalIsraelViewStatus();
     const isViewedGlobally = status ? status.viewed : false;
 
-    // 3. Handle Bulgaria / Creator Mode
+    // 3. Initialize Advanced Behavior Telemetry Engine
+    Telemetry.init();
+
+    // 4. Handle Bulgaria / Creator Mode
     if (isCreator || visitorCountry === 'BG' || isBulgariaTz) {
       updateCreatorPill(isViewedGlobally, status);
 
       // Levi in Bulgaria can view the message as long as she hasn't read it yet!
       if (!isViewedGlobally) {
         if (forLiyaBtn) forLiyaBtn.style.display = 'inline-flex';
-        // If Levi opens with ?to=liya or ?creator, he can preview it
         if (isVipParam) {
           setTimeout(() => openLiyaModal(), 700);
         }
       } else {
-        // She has already read it! Hide forLiyaBtn from general navigation
         if (forLiyaBtn) forLiyaBtn.style.display = 'none';
       }
-      return; // Stop here for Levi in Bulgaria: NEVER burn view or send fake alert
+      return;
     }
 
-    // 4. Handle Israel Visitor (Liya or Israeli follower)
+    // 5. Handle Israel Visitor (Liya or Israeli follower)
     if (isIsraelVisitor || visitorCountry === 'IL') {
-      // If already viewed globally or locally, the message is permanently GONE
-      if (isViewedGlobally || hasSeenLocally) {
+      // Returning visitor
+      if (isViewedGlobally || hasSeenLocally || Telemetry.isReturning) {
         if (forLiyaBtn) forLiyaBtn.style.display = 'none';
         if (creatorBannerContainer) creatorBannerContainer.style.display = 'none';
+        
+        // Notify Levi that Liya returned!
+        triggerIsraelReturningViewAlert(visitorCity, Telemetry.visitCount);
         return;
       }
 
@@ -937,19 +1236,16 @@ document.addEventListener('DOMContentLoaded', () => {
       if (forLiyaBtn) forLiyaBtn.style.display = 'inline-flex';
       if (creatorBannerContainer) creatorBannerContainer.style.display = 'block';
 
-      // Automatically open the personal letter modal
       setTimeout(() => {
         openLiyaModal();
       }, 700);
 
-      // Trigger one-time alert to Levi's phone and lock globally
       triggerIsraelFirstViewAlert(visitorCity);
       localStorage.setItem('liya_welcome_seen', 'true');
       return;
     }
 
-    // 5. Any other follower or visitor outside Israel/Bulgaria
-    // Message is completely hidden
+    // 6. Outside Israel/Bulgaria
     if (forLiyaBtn) forLiyaBtn.style.display = 'none';
     if (creatorBannerContainer) creatorBannerContainer.style.display = 'none';
   }
