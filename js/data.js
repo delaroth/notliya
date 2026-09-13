@@ -5,76 +5,47 @@ const SITE_DATA = {
     handle: "@not.liya",
     instagramUrl: "https://www.instagram.com/not.liya/",
     tiktokUrl: "https://www.tiktok.com/@not.liya",
+    artPortrait: "images/art/portrait.jpg",
+    artCoffee: "images/art/coffee.jpg",
+    artProtein: "images/art/protein.jpg",
+    artPencil: "images/art/pencil.jpg",
     avatar: "images/avatar.jpg",
-    bioHe: "פאנצ'ים שיכלתי לזרוק, אהבה שיכלתי לקבל, ופרישה מוקדמת מהאינטרנט העולמי.",
-    bioEn: "Punchlines I could have thrown, love I could have received, and an early retirement from the global internet rat race.",
-    resetStoryHe: "פעם היו מיליוני עוקבים מכל העולם. מחקתי הכל כדי לחזור לדבר פה בגובה העיניים, בלי בולשיט, עם האנשים שמבינים את השפה וההומור.",
-    resetStoryEn: "Once had a massive global following. Wiped it clean to keep things real, intimate, and casual with the people who actually get the humor.",
-    stats: {
-      tiktokFollowers: "65.1K+",
-      tiktokLikes: "3.4M+",
-      igFollowers: "23K+",
-      tolerance: "0%"
-    }
+    bioHe: "פאנצ'ים שיכלתי לזרוק, אהבה שיכלתי לקבל, ופרישה מוקדמת מרעשי רקע.",
+    bioEn: "Punchlines I could have thrown, love I could have received, and an early retirement from the noise.",
+    manifestoHe: "פעם רדפתי אחרי מיליוני צפיות בעולם. היום אני פה, מדברת בגובה העיניים, בלי בולשיט ובלי פילטרים. פינה אינטימית לפרוק חרדות, לצחוק על החיים, ולתהות לאן לעזאזל הגענו כחברה.",
+    manifestoEn: "Once chased millions of vanity metrics globally. Today I'm here, keeping it completely unfiltered with the real ones. An intimate clubhouse to unpack anxiety, laugh at life, and wonder where society went wrong."
   },
 
-  // Mood Check-in data for Community
-  moods: [
+  stories: [
     {
-      id: "caffeinated_panic",
-      icon: "☕",
-      labelHe: "קפאין וחרדות",
-      labelEn: "Caffeine & Panic",
-      responseHe: "שתית אייס קפה על בטן ריקה ועכשיו הדופק שלך שומע צבעים? ברוכה הבאה לקבוצה. שבי, תשתי כוס מים ותזכרי שאף אחד לא באמת יודע מה הוא עושה בעולם הזה.",
-      responseEn: "Chugged iced espresso on an empty stomach and now your pulse can hear colors? Welcome to the club. Drink some water and remember nobody knows what they're doing."
+      id: "coffee",
+      image: "images/art/coffee.jpg",
+      tagHe: "שקט נפשי והדחקה",
+      tagEn: "Peace of Mind & Repression",
+      titleHe: "אייס קפה, מיטה, וחוסר עניין מוחלט בסמול-טוק",
+      titleEn: "Iced Coffee, Bed-Rotting, and Zero Social Battery",
+      descHe: "למחוק את הרעש העולמי היה הצעד הכי בריא שעשיתי. לפעמים להישאר מתחת לשמיכה עם אייס קפה ולבהות בתקרה זו לא עצלנות, זו שמירה אקטיבית על שפיות. אם תתעלמי מבעיות מספיק זמן הן כנראה לא ייעלמו, אבל לפחות יש מזגן.",
+      descEn: "Tuning out the international noise was the best mental health decision I ever made. Sometimes staying in bed with iced coffee isn't laziness, it's radical sanity preservation. If you ignore your problems they won't vanish, but at least there's air conditioning."
     },
     {
-      id: "bed_rotting",
-      icon: "🛏️",
-      labelHe: "מרקיבה במיטה",
-      labelEn: "Full Bed-Rot",
-      responseHe: "מרקיבה במיטה מתחת לשמיכה כבר 6 שעות וגוללת רילים? זה לא עצלנות, זו שמירה על אנרגיה קיומית. את נראית מושלמת ככה.",
-      responseEn: "Bed-rotting under the duvet for 6 hours straight scrolling reels? That's not laziness, that is strategic existential energy preservation. Carry on."
+      id: "protein",
+      image: "images/art/protein.jpg",
+      tagHe: "רוסט על ג'ימברוז",
+      tagEn: "Gym Bro Chronicles",
+      titleHe: "חלבון: מאז שהבן זוג שלי נכנס לכושר",
+      titleEn: "Protein: Life in the Shadow of Whey Isolate",
+      descHe: "הבית שלנו הפך למחסן אבקות תעשייתי. כל כוס מים נמדדת, כל נשימה מחושבת בגרמים של חלבון איזולט, ושייקרים שלא נשטפו בזמן מאיימים על שלום הציבור. הוא חושב על המשקלים, אני חושבת על לאן לעזאזל הגענו כחברה.",
+      descEn: "Our apartment turned into an industrial whey distribution center. Every conversation is measured in grams of protein, lukewarm water, and forgotten shakers creating biohazards. He counts macros, I contemplate where society went wrong."
     },
     {
-      id: "fine_world_burns",
-      icon: "🫠",
-      labelHe: "הכל בסדר גמור™",
-      labelEn: "Everything Is Fine™",
-      responseHe: "הכל בוער מסביב אבל את מחייכת ואומרת 'יהיה בסדר'? גישה מעולה, הדחקה היא אומנות. אם תתעלמי מזה מספיק זמן זה כנראה לא ייעלם, אבל לפחות יש מזגן.",
-      responseEn: "Everything is burning around you but you're smiling saying 'it's fine'? Repression is an art form. It won't solve anything, but at least there's air conditioning."
-    },
-    {
-      id: "ready_to_roast",
-      icon: "🤌",
-      labelHe: "מוכנה לזרוק פאנץ'",
-      labelEn: "Ready to Roast",
-      responseHe: "מישהו עצבן אותך היום? קחי נשימה עמוקה, אל תעשי מזה סצנה - פשוט תכתבי על זה ריל ציני שיקבל 200 אלף צפיות.",
-      responseEn: "Did someone test your patience? Take a breath, don't cause a scene — just turn them into a viral roast that hits 200k views."
-    }
-  ],
-
-  // Emergency Sanity Reality Checks (Warm, funny mental health checks)
-  sanityChecks: [
-    {
-      he: "בדיקת מערכות: שחררי את הלסת. תורידי את הכתפיים מהאוזניים. קחי שלוק מים. תזכרי שאנחנו על סלע שמרחף בחלל וכל הדברים שמלחיצים אותך היום יהיו לא רלוונטיים עוד שנה.",
-      en: "System check: Unclench your jaw. Drop your shoulders away from your ears. Sip some water. Remember we are on a rock floating in space and whatever stresses you today won't matter soon."
-    },
-    {
-      he: "זה בסדר שאין לך כוח היום. העולם הוא מקום מתיש, אנשים מעייפים, וגם סוללה של אייפון צריכה להיטען על 1%. תני לעצמך פס.",
-      en: "It is 100% fine that you have zero energy today. The world is exhausting, people are draining, and even an iPhone needs to charge at 1%. Cut yourself some slack."
-    },
-    {
-      he: "ביטול תוכניות ברגע האחרון זה לא פשע, זו הגנה עצמית על בריאות הנפש.",
-      en: "Canceling plans at the last minute is not a crime; it is legal self-defense for your mental health."
-    },
-    {
-      he: "לא כל מחשבה שעוברת לך בראש ב-02:00 בלילה היא עובדה מדעית. לפעמים המוח שלך פשוט משועמם ומחפש דרמות.",
-      en: "Not every intrusive thought that hits at 2am is a scientific fact. Sometimes your brain is just bored and manufacturing reality TV."
-    },
-    {
-      he: "למחוק עוקבים, לנקות רעשי רקע ולבחור לעצמך שקט זה לא בריחה - זה הצעד הכי אמיץ שיש. ליה כבר הוכיחה את זה.",
-      en: "Cleaning house, resetting your circle, and choosing inner peace isn't quitting — it's the smartest move on earth. Liya already proved it."
+      id: "pencil",
+      image: "images/art/pencil.jpg",
+      tagHe: "סיפור המקור",
+      tagEn: "Origin Story",
+      titleHe: "טראומת העט-עיפרון (0.7 מ״מ) ביסודי",
+      titleEn: "The 0.7mm Mechanical Pencil Incident",
+      descHe: "אנשים שואלים מאיפה הציניות והמבט הקפוא? בכיתה ד' היה ילד שהפך את כיס המכנסיים שלי למטרה סדרתית של שפיצים גרפיט. הטראומה עדיין שם, אבל לפחות היא מימנה אישיות שלמה והומור שחור שעובד מעולה.",
+      descEn: "People wonder why I'm cynical and deadpan. In 4th grade a boy perpetually jabbed 0.7mm mechanical pencil lead into my butt. The trauma remains, but at least it forged a complete personality and elite dark humor."
     }
   ],
 
@@ -363,28 +334,12 @@ const SITE_DATA = {
       en: "He waited two full years to bring it up. People hoard petty grudges better than Swiss banks hoard gold."
     },
     {
-      he: "פאנצ'ים שיכלתי לזרוק ואהבה שיכלתי לקבל - ספוילר: בחרתי בפאנצ'ים.",
-      en: "Punchlines I could have thrown and love I could have received — spoiler: I went with the punchlines."
+      he: "בדיקת מערכות: שחררי את הלסת. תורידי את הכתפיים. קחי שלוק מים. אנחנו על סלע בחלל וזה לא משנה.",
+      en: "System check: Unclench your jaw. Drop your shoulders. Sip some water. We're on a space rock and it doesn't matter."
     },
     {
-      he: "למחוק את כל הפיד העולמי ולהישאר רק עם הקהילה המקומית זה כמו להחליף מסיבת טבע רועשת בקפה שקט במרפסת. הטוב ביותר שעשיתי.",
-      en: "Deleting a massive global feed to hang out only with my local crowd is like swapping a sweaty stadium for a quiet coffee. Best move ever."
-    },
-    {
-      he: "אני לא פסימית, אני פשוט ריאליסטית עם חוש הומור בעייתי.",
-      en: "I'm not a pessimist. I'm just a realist with an extremely problematic sense of humor."
-    },
-    {
-      he: "אם מישהו אומר לך 'יהיה בסדר', תתרחקי ממנו מיד. הוא כנראה הוזה.",
-      en: "If anyone tells you 'everything will be fine', distance yourself immediately. They are hallucinating."
-    },
-    {
-      he: "למה לפתור דברים בתקשורת בוגרת כשאפשר פשוט לפרסם סרטון עם מוזיקה דרמטית?",
-      en: "Why resolve conflict through mature dialogue when you can post a video with moody bass?"
-    },
-    {
-      he: "הדבר הכי יציב בחיים שלי כרגע זה החוסר חשק לקום מהמיטה בבוקר.",
-      en: "The most stable constant in my life right now is the total reluctance to exit my bed."
+      he: "למחוק מיליוני עוקבים זרים כדי להישאר עם הקהילה המקומית זה כמו להחליף מסיבת טבע בקפה קר ושקט בסלון.",
+      en: "Trading millions of global vanity followers for a real local community is the ultimate peace of mind."
     }
   ],
 
@@ -393,9 +348,17 @@ const SITE_DATA = {
       id: "safe_space",
       titleHe: "מועדון 'מרקיבות ביחד' (Safe Space ציני)",
       titleEn: "'Rotting Together' Club (Cynical Safe Space)",
-      descHe: "קהילה אינטימית לשיתוף חרדות, רנטים קצרים, ודיונים על למה כולנו צריכים שנ\"צ של 14 שעות.",
+      descHe: "פינה אינטימית לשיתוף חרדות, רנטים קצרים, ודיונים על למה כולנו צריכות שנ\"צ של 14 שעות.",
       descEn: "An intimate space to share existential panic, quick rants, and why we all need a 14-hour nap.",
       votes: 2140
+    },
+    {
+      id: "podcast_void",
+      titleHe: "פודקאסט שבועי: 'צועקים לתוך הריק'",
+      titleEn: "Weekly Podcast: 'Screaming into the Void'",
+      descHe: "ליה יושבת עם מיקרופון ומדברת בגובה העיניים על בריאות הנפש, גברים, והעולם המודרני בלי פילטרים.",
+      descEn: "Liya sits with a mic and talks raw about mental health, dating, and modern chaos with zero PR filter.",
+      votes: 2490
     },
     {
       id: "roast_hotline",
@@ -412,14 +375,6 @@ const SITE_DATA = {
       descHe: "אוברסייז קפוצ'ונים עם 'לאן הגענו כחברה', שייקרים ומדבקות לפריקה עצמית.",
       descEn: "Heavyweight hoodies emblazoned with 'Where Did Society Go Wrong', shakers & sticker packs.",
       votes: 1420
-    },
-    {
-      id: "podcast_void",
-      titleHe: "פודקאסט אינטימי: 'צועקים לתוך הריק'",
-      titleEn: "Intimate Podcast: 'Screaming into the Void'",
-      descHe: "ליה יושבת עם מיקרופון ומדברת בגובה העיניים על בריאות הנפש, גברים, והעולם המודרני בלי פילטרים.",
-      descEn: "Liya sits with a mic and talks raw about mental health, dating, and modern chaos with zero PR filter.",
-      votes: 2490
     }
   ],
 
@@ -427,203 +382,120 @@ const SITE_DATA = {
     {
       author: "אנונימית עם חרדה חברתית",
       authorEn: "Social Anxiety Anon",
-      textHe: "נשארתי במסיבה 15 דקות רק כדי שיראו שבאתי, ואז התחבאתי בשירותים עד שהיה מנומס להזמין מונית הביתה. ליה הצלת לי את השפיות עם הרילים שלך.",
+      textHe: "נשארתי במסיבה 15 דקות רק כדי שיראו שבאתי, ואז התחבאתי בשירותים עד שהיה מנומס להזמין מונית הביתה. ליה הרילים שלך שומרים אותי שפויה.",
       textEn: "Stayed at a party for 15 mins just to be seen, then hid in the bathroom until it was polite to Uber home. Liya your reels keep me sane.",
-      timestamp: "לפני יומיים / 2d ago",
-      verified: true
+      timestamp: "לפני יומיים",
+      timestampEn: "2d ago"
     },
     {
       author: "בוגר טראומת עט-עיפרון",
       authorEn: "0.7mm Survivor",
       textHe: "עד היום כשאני רואה עט עיפרון שפיצים 0.7 הדופק שלי עולה ל-140. ליה את הריפוי שלי.",
-      textEn: "To this day when I see a 0.7mm mechanical pencil my heart rate spikes to 140. Liya your videos are my therapy.",
-      timestamp: "לפני 4 ימים / 4d ago",
-      verified: true
+      textEn: "To this day when I see a 0.7mm mechanical pencil my heart rate spikes to 140. Liya your videos are therapy.",
+      timestamp: "לפני 4 ימים",
+      timestampEn: "4d ago"
     },
     {
       author: "חובבת ביטול תוכניות",
       authorEn: "Professional Flaker",
       textHe: "הרגשתי אשמה שביטלתי דייט כדי לבהות בתקרה, עד שראיתי את הסרטון שלך על שקט נפשי. תודה שנתת לגיטימציה לבטלה.",
       textEn: "Felt guilty for canceling a date to stare at the ceiling, until I saw your video on peace of mind. Thanks for legitimizing my bed-rot.",
-      timestamp: "אתמול / Yesterday",
-      verified: true
-    }
-  ],
-
-  merch: [
-    {
-      id: "merch_1",
-      titleHe: "טי-שירט 'חלבון וחרדות' Acid Wash",
-      titleEn: "'Whey & Anxiety' Heavyweight Acid Tee",
-      descHe: "100% כותנה כבדה. מיועד לאנשים שמתמודדים עם החיים בעזרת קפאין, ציניות וחוסר שעות שינה.",
-      descEn: "100% heavyweight washed cotton. For anyone surviving reality on caffeine, cynicism, and 4 hours of sleep.",
-      price: "169 ₪",
-      priceUsd: "$45",
-      badgeHe: "בסטסלר מומצא",
-      badgeEn: "Fictional Best Seller",
-      imageMock: "images/post_6_DR2KOUtAh0b.jpg"
-    },
-    {
-      id: "merch_2",
-      titleHe: "ספל 'לאן לעזאזל הגענו כחברה'",
-      titleEn: "'Where The Hell Did Society Go' Mug",
-      descHe: "ספל קרמיקה שחור מאט 450 מ\"ל ללגימת קפה שחור וייאוש קיומי מול המיילים בעבודה.",
-      descEn: "Matte black 450ml ceramic mug for sipping dark roast coffee alongside cold existential dread.",
-      price: "69 ₪",
-      priceUsd: "$19",
-      badgeHe: "חובה במשרד",
-      badgeEn: "Office Essential",
-      imageMock: "images/post_9_DRxU2idgsJU.jpg"
-    },
-    {
-      id: "merch_3",
-      titleHe: "קפוצ'ון 'מרקיבות ביחד' אוברסייז",
-      titleEn: "'Rotting Together' Oversized Hoodie",
-      descHe: "קפוצ'ון ענק ומנחם במיוחד לבהייה ממושכת בטיקטוק בתוך המיטה בלי שאיש ישפוט אותך.",
-      descEn: "Ultra-oversized cozy fleece hoodie designed strictly for staring at the ceiling in complete peace.",
-      price: "249 ₪",
-      priceUsd: "$68",
-      badgeHe: "מהדורה ביתית",
-      badgeEn: "Home Edition",
-      imageMock: "images/post_1_DD7n-KhIptn.jpg"
-    },
-    {
-      id: "merch_4",
-      titleHe: "מגן אחורי נגד עטי-עיפרון (שריון פולימרי)",
-      titleEn: "Tactical Anti-Pencil Glute Armor",
-      descHe: "מגן טיטניום גמיש לכיס האחורי נגד ילדים סוררים בכיתה ד' שמחזיקים פיילוט 0.7.",
-      descEn: "Flexible titanium pocket shield for complete immunity against chaotic 4th grade pencil assassins.",
-      price: "99 ₪",
-      priceUsd: "$28",
-      badgeHe: "טראומה ממוסחרת",
-      badgeEn: "Monetized Trauma",
-      imageMock: "images/post_12_DRchG3kgm_I.jpg"
+      timestamp: "אתמול",
+      timestampEn: "Yesterday"
     }
   ],
 
   translations: {
     he: {
-      siteTitle: "ליה • not.liya | הפינה השקטה והצינית שלנו",
-      navBio: "הסיפור שלי",
-      navVault: "סרטונים ורנטים",
-      navCheckin: "איך אנחנו היום?",
-      nav8ball: "פאנצ'ומטר",
-      navSanity: "עזרה ראשונה לנפש",
-      navPitch: "הצבעה לאתר",
-      navConfess: "וידויים",
-      navMerch: "מרצ' דמיוני",
-      statusOnline: "מחוברת ושופטת באהבה",
-      forLiyaBtn: "👋 ליה, כנסי לפה!",
-      heroBadge: "מהמיליונים בעולם לקפה אינטימי בישראל",
+      siteTitle: "ליה • notliya.com | הפינה האינטימית שלנו",
+      navLore: "הסיפור",
+      navVault: "הסרטונים",
+      navOracle: "הפאנצ'ומטר",
+      navClubhouse: "המועדון",
+      statusText: "מחוברת ושופטת באהבה",
+      forLiyaBtn: "ליה, זה בשבילך ✨",
       heroPunchline: "פאנצ'ים שיכלתי לזרוק ואהבה שיכלתי לקבל.",
-      heroSub: "בלי אלגוריתמים עולמיים ובלי זיוף. מחקתי את הרעש כדי להישאר עם האנשים האמיתיים. מקום בטוח לפרוק חרדות, לקטר על גברים ולצחוק על הכל.",
-      btnVault: "צפו ברנטים",
-      btnSanity: "עזרה ראשונה לנפש 🛟",
-      btnPitch: "הצביעו לאתר הבא",
-      statTiktok: "עוקבים בטיקטוק",
-      statLikes: "לייקים של אהבה",
-      statIg: "הקהילה שלנו באינסטגרם",
-      statPatience: "סבלנות לאנשים מזויפים",
-      moodTitle: "איך אנחנו מרגישות היום?",
-      moodSubtitle: "לחצי על המצב הנפשי הנוכחי שלך וקבלי תגובה מותאמת אישית מליה.",
-      vaultTitle: "כספת הסרטונים והפאנצ'ים",
-      vaultSubtitle: "כל הלהיטים הוויראליים, ההתמוטטויות העצביות והתובנות החברתיות שנשמרו לנצח.",
+      heroSub: "בלי אלגוריתמים מזויפים ובלי גינוני אינסטגרם. מקום שקט, כן וציני לפרוק חרדות, לדבר על החיים ולצחוק על הכל.",
+      btnVault: "לכל הסרטונים",
+      btnOracle: "התייעצי בפאנצ'ומטר",
+      statTiktok: "בטיקטוק",
+      statLikes: "לייקים",
+      statIg: "באינסטגרם",
+      statPeace: "רעשי רקע",
+      storiesTitle: "הלור של ליה: מאיפה הכל התחיל?",
+      storiesSubtitle: "הסיפורים, הבדיחות הפנימיות והטראומות שעיצבו את האישיות הכי לא מתנצלת ברשת.",
+      vaultTitle: "כספת הסרטונים והרנטים",
+      vaultSubtitle: "כל הלהיטים הוויראליים, ההתמוטטויות העצביות והתובנות החברתיות שנשמרו.",
       filterAll: "הכל (12)",
       filterDark: "הומור שחור",
       filterDating: "דייטים וגברים",
       filterRant: "רנטים ודעות",
       filterLifestyle: "כאוס וחיים",
-      loreTitle: "הריסטארט: למה לעזוב את העולם בשביל הבית?",
-      loreSubtitle: "פעם מיליוני עוקבים זרים, היום קהילה חמה, כנה וצינית שמבינה בדיוק כל ניואנס.",
-      sanityTitle: "כפתור עזרה ראשונה למתמוטטות קלות",
-      sanitySubtitle: "מרגישה מוצפת? החרדה קפצה לבקר? לחצי על הכפתור לקבלת סטירת מציאות מנחמת ומחבקת.",
-      sanityBtn: "תני לי פרופורציה עכשיו 🛟",
-      cynicTitle: "הפאנצ'ומטר: מוקד ייעוץ אכזרי",
-      cynicSubtitle: "תקועים עם דילמה בחיים? בחרו בעיה או הקלידו, ותקבלו סטירת מציאות מליה.",
-      cynicPlaceholder: "למשל: הבחור לא עונה לי, מה לעשות?",
-      cynicBtn: "תני לי פאנץ' לפנים 💥",
-      cynicCopy: "העתק ציטוט",
-      cynicCopied: "הועתק ללוח!",
-      pitchTitle: "ליה שאלה: 'איזה אתר אתם רוצים?'",
-      pitchSubtitle: "הצביעו על הפיצ'רים שחייבים להיות באתר הרשמי הבא של ליה, או הציעו רעיון משלכם!",
-      pitchVoteBtn: "הצביעו לפיצ'ר",
-      pitchVoted: "הצבעתם!",
-      pitchInputPlaceholder: "יש לכם רעיון גאוני אחר לאתר של ליה? כתבו כאן...",
-      pitchSubmitBtn: "שלחו הצעה לליה",
-      confessTitle: "תיבת תלונות ווידויים מביכים",
-      confessSubtitle: "קרה לכם משהו מביך בטירוף? שתפו אנונימית. אולי זה יגיע לריל הבא.",
-      confessPlaceholder: "ספרו כאן את הסיפור המביך שלכם בלי שמות...",
-      confessAuthorPlaceholder: "כינוי (או השאירו ריק לאנונימי)",
-      confessSubmitBtn: "שגרו לריק",
-      merchTitle: "דברים שהייתי מוכרת אם היה לי אכפת",
-      merchSubtitle: "קולקציית קפסולה פיקטיבית לציניקנים בלב ובנפש.",
-      merchBuyBtn: "הזמנה מוקדמת (בצחוק)",
-      merchToast: "אל תתרגשו, המרצ' עדיין בדמיון של ליה.",
+      oracleTitle: "הפאנצ'ומטר: מוקד ייעוץ אכזרי",
+      oracleSubtitle: "תקועה עם דילמה בחיים? החרדה קפצה לבקר? קבלי מנת ציניות מנחמת מליה.",
+      oraclePlaceholder: "כתבי בעיה (למשל: הבחור לא עונה 8 שעות, מה לעשות?)",
+      oracleBtn: "תני לי פאנץ' 💥",
+      oracleSanityBtn: "שחררי את הלסת 🛟",
+      oracleCopied: "הועתק ללוח!",
+      clubhouseTitle: "המועדון: הצביעו לאתר הבא של ליה",
+      clubhouseSubtitle: "ליה שאלה איזה אתר לבנות. הצביעו לפיצ'ר המועדף עליכם או זרקו וידוי אנונימי.",
+      voteBtn: "הצביעו",
+      votedText: "הצבעתם ✓",
+      pitchPlaceholder: "יש לך רעיון אחר לאתר של ליה? כתבי כאן...",
+      pitchSubmitBtn: "שלחי הצעה לליה",
+      confessTitle: "וידויים אנונימיים",
+      confessPlaceholder: "שתפי סיפור מביך או תלונה על החיים בלי שמות...",
+      confessAuthorPlaceholder: "כינוי (או השאירי ריק לאנונימי)",
+      confessSubmitBtn: "שגרי לריק",
       footerCredits: "נבנה באהבה, כבוד והמון ציניות עבור @not.liya. הבית האינטימי של הקהילה.",
       soundOn: "סאונד פעיל",
       soundOff: "השתק",
-      openInIg: "צפו בריל המקורי באינסטגרם",
+      openInIg: "צפי בריל המקורי באינסטגרם",
       modalClose: "סגור (Esc)"
     },
     en: {
-      siteTitle: "Liya • @not.liya | Our Cozy & Cynical Clubhouse",
-      navBio: "The Story",
-      navVault: "Rants & Reels",
-      navCheckin: "Daily Check-in",
-      nav8ball: "Cynic 8-Ball",
-      navSanity: "Sanity First-Aid",
-      navPitch: "Vote Features",
-      navConfess: "Confessions",
-      navMerch: "Concept Merch",
-      statusOnline: "Online & judging with love",
-      forLiyaBtn: "👋 Hey Liya, click here!",
-      heroBadge: "From global millions to a cozy Israeli clubhouse",
+      siteTitle: "Liya • notliya.com | The Clubhouse",
+      navLore: "The Story",
+      navVault: "The Reels",
+      navOracle: "The Oracle",
+      navClubhouse: "Clubhouse",
+      statusText: "Online & judging with love",
+      forLiyaBtn: "Hey Liya, this is for you ✨",
       heroPunchline: "Punchlines I could have thrown and love I could have received.",
-      heroSub: "No fake algorithms, no international PR facade. Wiped the global noise to keep it real with the core community. A safe harbor to unpack anxiety, roast men, and laugh through existential dread.",
-      btnVault: "Explore The Vault",
-      btnSanity: "Sanity First-Aid 🛟",
-      btnPitch: "Vote For The Site",
-      statTiktok: "TikTok Followers",
-      statLikes: "Video Likes",
-      statIg: "Instagram Community",
-      statPatience: "Tolerance for Fakes",
-      moodTitle: "How Are We Feeling Today?",
-      moodSubtitle: "Click your current emotional state to get a custom reaction from Liya.",
+      heroSub: "No fake global algorithms, no PR facade. A quiet, honest, cynical corner to unpack anxiety, laugh at life, and roast reality.",
+      btnVault: "Watch The Reels",
+      btnOracle: "Consult The Oracle",
+      statTiktok: "on TikTok",
+      statLikes: "Likes",
+      statIg: "on Instagram",
+      statPeace: "Background Noise",
+      storiesTitle: "The Lore: How Did We Get Here?",
+      storiesSubtitle: "The inside jokes, core memories, and traumas that forged the internet's favorite realist.",
       vaultTitle: "The Rant Vault & Video Archive",
-      vaultSubtitle: "Every viral hit, existential dread breakdown, and unvarnished social observation.",
+      vaultSubtitle: "Every viral hit, existential breakdown, and unvarnished social observation.",
       filterAll: "All (12)",
       filterDark: "Dark Humor",
       filterDating: "Dating & Men",
       filterRant: "Rants & Takes",
       filterLifestyle: "Chaos & Life",
-      loreTitle: "The Reset: Why Trade The World For Home?",
-      loreSubtitle: "Once chasing millions globally, now building a real, grounded, sarcastic haven where every nuance lands.",
-      sanityTitle: "Mental Health & Sanity First-Aid",
-      sanitySubtitle: "Feeling overwhelmed? Existential dread paying a visit? Hit the button for an unpretentious reality-check hug.",
-      sanityBtn: "Give Me Perspective 🛟",
-      cynicTitle: "The Cynic 8-Ball & Reality Check",
-      cynicSubtitle: "Stuck with a life dilemma? Type your problem and get an immediate reality check.",
-      cynicPlaceholder: "e.g., He left me on read for 14 hours, what should I do?",
-      cynicBtn: "Roast My Life Dilemma 💥",
-      cynicCopy: "Copy Quote",
-      cynicCopied: "Copied to clipboard!",
-      pitchTitle: "Liya Asked: 'What site should we build?'",
-      pitchSubtitle: "Vote on the killer features for her permanent website, or pitch a crazy idea directly!",
-      pitchVoteBtn: "Vote for Feature",
-      pitchVoted: "Voted!",
-      pitchInputPlaceholder: "Got a brilliant concept for Liya's permanent website? Pitch it here...",
+      oracleTitle: "The Cynic Oracle & Reality Check",
+      oracleSubtitle: "Stuck with a dilemma? Existential dread paying a visit? Hit the button for perspective.",
+      oraclePlaceholder: "Type your dilemma (e.g., He left me on read for 8 hours...)",
+      oracleBtn: "Roast My Dilemma 💥",
+      oracleSanityBtn: "Unclench Your Jaw 🛟",
+      oracleCopied: "Copied to clipboard!",
+      clubhouseTitle: "The Clubhouse: Shape Liya's Permanent Site",
+      clubhouseSubtitle: "Liya asked her followers what site to build. Vote for your favorite feature or drop a confession.",
+      voteBtn: "Vote",
+      votedText: "Voted ✓",
+      pitchPlaceholder: "Got another brilliant concept for Liya? Pitch it here...",
       pitchSubmitBtn: "Send Pitch to Liya",
-      confessTitle: "Awkward Confessions & Complaint Box",
-      confessSubtitle: "Did something humiliating happen to you? Drop it anonymously. It might become her next video.",
-      confessPlaceholder: "Share your unhinged awkward story here without names...",
+      confessTitle: "Anonymous Confessions",
+      confessPlaceholder: "Share an awkward story or grievance anonymously...",
       confessAuthorPlaceholder: "Nickname (or leave blank for Anon)",
       confessSubmitBtn: "Drop into the Void",
-      merchTitle: "Things I'd Sell If I Actually Cared",
-      merchSubtitle: "A fictitious capsule collection tailored for full-time cynics.",
-      merchBuyBtn: "Pre-order (Just Kidding)",
-      merchToast: "Don't get too excited, this merch only lives in Liya's imagination.",
       footerCredits: "Crafted with dark humor, affection, and respect for @not.liya following her community call.",
-      soundOn: "Sound FX On",
+      soundOn: "Sound On",
       soundOff: "Muted",
       openInIg: "Open Original Reel on Instagram",
       modalClose: "Close (Esc)"

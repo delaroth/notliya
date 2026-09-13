@@ -1,81 +1,84 @@
-# ליה • @not.liya | Official Website & Creator Hub
+# ליה • notliya.com | Official Website & Community Hub
 
-> **"פאנצים שיכלתי לזרוק ואהבה שיכלתי לקבל"**  
-> Custom interactive website themed and built for influencer **[@not.liya](https://www.instagram.com/not.liya/)**, capturing her dark humor, viral video quotes, and cynical Gen-Z aesthetic.
-
----
-
-## 🌟 Highlights & Features
-
-1. **Authentic Imagery & Content**:
-   - High-resolution profile avatar and 12 extracted viral reel thumbnails stored locally in `images/`.
-   - Direct integration with her Instagram post links (`https://www.instagram.com/p/...`).
-   - Quotes, catchphrases, and captions straight from her real videos:
-     - *"הוא חושב על המחמאה הזאת עד היום"*
-     - *"לפחות אין לו אפילפסיה יותר (כי הוא לא כאן)"*
-     - *"לאן לעזאזל הגענו כחברה"*
-     - *"כשהייתי קטנה חשבתי שחסרי דיור הם זומבים"*
-     - *"חלבון. מאז שהבן זוג שלי נכנס לכושר"*
-     - *"טראומת העט-עיפרון ביסודי (0.7 מ״מ)"*
-     - *"יא חתיך אחד 🤌"*
-
-2. **Full Bilingual Support (עברית RTL / English LTR)**:
-   - Instant language switch with smooth directional animation.
-   - Every single joke, bio, card, button, and prompt translated with comedic nuance.
-
-3. **Interactive Features**:
-   - **The Video Vault**: 12 categorized reels (Dark Humor, Dating & Men, Rants, Daily Chaos) with a full-screen Reel Modal viewer.
-   - **The Cynic 8-Ball (הפאנצ'ומטר)**: Ask a life question or get a random reality check roast with a sound buzzer and one-click copy button.
-   - **Community Feature Pitch & Poll**: Fans (and Liya!) can vote on what features to build into her permanent website, plus submit custom suggestions directly.
-   - **Anonymous Confessions & Complaint Box**: Interactive confession wall where fans drop awkward stories and grievances.
-   - **Concept Merch Drop**: Fictional capsule collection (*"חלבון"* Acid Wash Tee, *"לאן הגענו כחברה"* Coffee Mug, etc.) with sarcastic pre-order notifications.
-   - **Zero-Dependency Sound Synthesizer**: Web Audio API generated pops, roasts, and chimes toggleable with one click.
+> **"פאנצ'ים שיכלתי לזרוק ואהבה שיכלתי לקבל"**  
+> Bespoke, editorial website designed for Israeli creator & influencer **[@not.liya](https://www.instagram.com/not.liya/)**, featuring custom stylized 2D illustrations, her iconic dark humor, viral video lore, and an intimate clubhouse for her community.
 
 ---
 
-## 🚀 How to Run Locally
+## 🖤 Design Philosophy: Human-Crafted, Anti-AI Slop
 
-### Option 1: Node.js Server (Recommended)
+Unlike generic, bloated AI website templates filled with tacky emoji meters and cluttered bento boxes, this site was reimagined with the sensibility of an editorial human designer:
+- **Intimate Obsidian Palette**: Deep carbon and matte obsidian backgrounds (`#09090d`), subtle borders, and vivid neon-lime (`#c8ff00`) + soft pink (`#ff3b69`) accents.
+- **Editorial Typography**: Pairing **Syne** (chic French display serif-sans) with **Heebo** (crafted Hebrew grotesque) and **Plus Jakarta Sans** for smooth readability.
+- **Custom Stylized Visual Lore**: 4 consistent, stylized 2D graphic illustrations capturing Liya's authentic likeness (wavy dark hair, septum piercing, signature deadpan side-eye):
+  1. `images/art/portrait.jpg` — Hero editorial portrait.
+  2. `images/art/coffee.jpg` — Iced coffee, bed-rotting, and radical unbothered peace of mind.
+  3. `images/art/protein.jpg` — Living in the shadow of boyfriend's industrial whey isolate obsession.
+  4. `images/art/pencil.jpg` — The 0.7mm mechanical pencil childhood trauma origin story.
+- **Generous Whitespace & Fluid Motion**: Focused sections with breathing room and crisp micro-interactions.
+
+---
+
+## 🌟 Features & Sections
+
+1. **The Lore & Origin Stories**:
+   - 3 deep-dive editorial cards with custom artwork chronicling her transition from global vanity metrics to an authentic Israeli community, the gym-bro partner roast, and the 0.7mm mechanical pencil trauma.
+2. **The Reels Vault**:
+   - 12 viral reels with instant category filtering (*Dark Humor*, *Dating & Men*, *Rants & Takes*, *Daily Chaos*).
+   - Interactive high-res viewer modal with views, likes, original punchlines, and direct Instagram links.
+3. **The Cynic Oracle & Sanity Check (הפאנצ'ומטר)**:
+   - Ask life dilemmas or get random existential punchlines straight from Liya's videos.
+   - Dedicated *"שחררי את הלסת 🛟"* (Unclench your jaw) button with calming mindfulness chime.
+   - One-click quote copy with tactile toast feedback.
+4. **The Clubhouse & Voting**:
+   - Community poll on which permanent feature Liya should build into `notliya.com`.
+   - Custom idea submission box saved locally for review.
+   - Anonymous confessions & complaints wall where followers vent into the void.
+5. **VIP "Hey Liya, This Is For You" Modal**:
+   - Dedicated welcome modal for Liya with a 1-click button to copy `notliya.com` to her Instagram story.
+6. **Zero-Dependency Synthesizer & Bilingual Engine**:
+   - Web Audio API synthesizer for tactile pops and warm chimes (no audio file requests).
+   - Seamless 1-click toggle between Hebrew (RTL) and English (LTR).
+
+---
+
+## 🌐 Domain & Vercel Deployment Guide (`notliya.com`)
+
+### 1. Vercel Deployment
+This repository is connected to GitHub at [`delaroth/notliya`](https://github.com/delaroth/notliya).
+- Log in to [Vercel Dashboard](https://vercel.com/new).
+- Click **"Add New..."** → **"Project"** → Import `delaroth/notliya`.
+- Framework Preset: **Other** (Static HTML).
+- Root Directory: `./`
+- Click **Deploy**.
+
+### 2. Custom Domain Configuration on Cloudflare
+Under your Cloudflare dashboard for `notliya.com`:
+
+1. **DNS Records**:
+   | Type  | Name | Content             | Proxy Status |
+   | :---- | :--- | :------------------ | :----------- |
+   | **A** | `@`  | `76.76.21.21`       | **DNS only (Gray cloud)** |
+   | **CNAME** | `www`| `cname.vercel-dns.com` | **DNS only (Gray cloud)** |
+
+   > **Note**: Keep proxy status on **DNS only (Gray cloud)** during initial setup so Vercel can issue the Let's Encrypt SSL certificate. Once active, you may enable Cloudflare proxying if desired.
+
+2. **Cloudflare SSL/TLS Encryption Mode**:
+   - Go to **SSL/TLS** tab in Cloudflare.
+   - Set encryption mode to **Full** or **Full (Strict)**.
+   - *Do NOT set to Flexible*, as that causes an infinite redirect loop (`ERR_TOO_MANY_REDIRECTS`) with Vercel's automatic HTTPS.
+
+---
+
+## 💻 Running Locally
+
 ```bash
+# Start local static server
 node server.js
-# Or
-npm start
+
+# Or open index.html directly in any browser
 ```
-Then open: [http://localhost:3000](http://localhost:3000)
-
-### Option 2: Direct Browser
-You can open `index.html` directly in Google Chrome, Microsoft Edge, Safari, or Firefox without any server.
-
----
-
-## 📁 File Structure
-
-```
-NotLiya Website/
-├── index.html              # Main HTML markup
-├── server.js               # Zero-dependency local HTTP static server
-├── package.json            # Project manifest & npm scripts
-├── README.md               # Documentation
-├── css/
-│   └── style.css           # Modern dark brutalist luxury stylesheet
-├── js/
-│   ├── data.js             # Enriched bilingual database of posts, quotes, poll, merch
-│   └── app.js              # Application logic, audio engine, modal, filters, voting
-└── images/
-    ├── avatar.jpg          # Profile photo
-    ├── post_1_DD7n-KhIptn.jpg
-    ├── post_2_DDkS_eUIv9t.jpg
-    ├── post_3_Dc1QeIQCach.jpg
-    ├── post_4_DcwHOeJiqKg.jpg
-    ├── post_5_DSQBX0kgnMB.jpg
-    ├── post_6_DR2KOUtAh0b.jpg
-    ├── post_7_DRzRYB3At6n.jpg
-    ├── post_8_DRzE3nygvmH.jpg
-    ├── post_9_DRxU2idgsJU.jpg
-    ├── post_10_DRxB_56AqXB.jpg
-    ├── post_11_DRwvLwlE1zb.jpg
-    └── post_12_DRchG3kgm_I.jpg
-```
+Open [http://localhost:3000](http://localhost:3000).
 
 ---
 

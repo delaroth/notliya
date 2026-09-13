@@ -1,23 +1,26 @@
 // ==========================================================================
-// @not.liya Official Web Experience - Main Application Logic
+// notliya.com • Main Application Engine
+// Bespoke editorial interaction logic, zero AI-slop, authentic community vibe
 // ==========================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
-  // App State
+  // ------------------------------------------------------------------------
+  // State Management
+  // ------------------------------------------------------------------------
   const state = {
     lang: localStorage.getItem('liya_lang') || 'he',
-    soundEnabled: localStorage.getItem('liya_sound') === 'true',
+    soundEnabled: localStorage.getItem('liya_sound') !== 'false', // default true
     activeFilter: 'all',
-    activeMoodIndex: 0,
-    currentSanityIndex: 0,
-    currentReelIndex: 0,
     votes: JSON.parse(localStorage.getItem('liya_votes') || '{}'),
     votedOptions: JSON.parse(localStorage.getItem('liya_voted_options') || '[]'),
-    confessions: JSON.parse(localStorage.getItem('liya_user_confessions') || '[]'),
-    userPitches: JSON.parse(localStorage.getItem('liya_user_pitches') || '[]')
+    userConfessions: JSON.parse(localStorage.getItem('liya_user_confessions') || '[]'),
+    userPitches: JSON.parse(localStorage.getItem('liya_user_pitches') || '[]'),
+    currentQuoteIndex: 0
   };
 
-  // Audio Synth Engine (Web Audio API - zero external audio assets required)
+  // ------------------------------------------------------------------------
+  // Audio Synth Engine (Zero External Audio Assets - Web Audio API)
+  // ------------------------------------------------------------------------
   const audio = {
     ctx: null,
     init() {
@@ -25,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
         this.ctx = new (window.AudioContext || window.webkitAudioContext)();
       }
     },
-    playTone(freq, type, duration, gainVal = 0.15) {
+    playTone(freq, type, duration, gainVal = 0.12) {
       if (!state.soundEnabled) return;
       try {
         this.init();
@@ -37,134 +40,150 @@ document.addEventListener('DOMContentLoaded', () => {
         osc.type = type;
         osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
         gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+        gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start();
         osc.stop(this.ctx.currentTime + duration);
       } catch (e) {
-        console.warn('Audio not supported or blocked:', e);
+        // Audio suspended or not allowed yet
       }
     },
     pop() {
-      this.playTone(600, 'sine', 0.08, 0.2);
-    },
-    buzzer() {
-      if (!state.soundEnabled) return;
-      try {
-        this.init();
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(260, this.ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(110, this.ctx.currentTime + 0.25);
-        gain.gain.setValueAtTime(0.18, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.25);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(this.ctx.currentTime + 0.25);
-      } catch(e) {}
+      this.playTone(560, 'sine', 0.08, 0.18);
     },
     ding() {
       if (!state.soundEnabled) return;
       try {
         this.init();
+        if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(880, this.ctx.currentTime);
-        osc.frequency.setValueAtTime(1174.66, this.ctx.currentTime + 0.08);
-        gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.4);
+        osc.frequency.setValueAtTime(1320, this.ctx.currentTime + 0.07);
+        gain.gain.setValueAtTime(0.16, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.35);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start();
-        osc.stop(this.ctx.currentTime + 0.4);
-      } catch(e) {}
+        osc.stop(this.ctx.currentTime + 0.35);
+      } catch (e) {}
     },
     warmChime() {
       if (!state.soundEnabled) return;
       try {
         this.init();
+        if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
         const notes = [523.25, 659.25, 783.99, 1046.50]; // C Major
         notes.forEach((freq, idx) => {
           setTimeout(() => {
-            this.playTone(freq, 'sine', 0.5, 0.12);
-          }, idx * 70);
+            this.playTone(freq, 'sine', 0.45, 0.1);
+          }, idx * 65);
         });
-      } catch(e) {}
+      } catch (e) {}
     }
   };
 
-  // DOM Elements
+  // ------------------------------------------------------------------------
+  // DOM Element References
+  // ------------------------------------------------------------------------
   const htmlDoc = document.documentElement;
   const langToggleBtn = document.getElementById('langToggleBtn');
   const soundToggleBtn = document.getElementById('soundToggleBtn');
+
+  // Hero & Navigation
   const forLiyaBtn = document.getElementById('forLiyaBtn');
   const forLiyaModal = document.getElementById('forLiyaModal');
   const liyaModalCloseBtn = document.getElementById('liyaModalCloseBtn');
-  const liyaCloseActionBtn = document.getElementById('liyaCloseActionBtn');
   const copySiteLinkBtn = document.getElementById('copySiteLinkBtn');
 
-  const moodSelector = document.getElementById('moodSelector');
-  const moodResponseText = document.getElementById('moodResponseText');
-
-  const sanityBtn = document.getElementById('sanityBtn');
-  const sanityQuote = document.getElementById('sanityQuote');
-  const sanityDisplayBox = document.getElementById('sanityDisplayBox');
-
+  // Vault
   const reelsGrid = document.getElementById('reelsGrid');
-  const filterBtns = document.querySelectorAll('.filter-btn');
+  const filterChips = document.querySelectorAll('.filter-chip');
 
-  const cynicAnswerBox = document.getElementById('cynicAnswerBox');
-  const cynicText = document.getElementById('cynicText');
-  const cynicBtn = document.getElementById('cynicBtn');
-  const cynicInput = document.getElementById('cynicInput');
-  const cynicCopyBtn = document.getElementById('cynicCopyBtn');
-
-  const pollContainer = document.getElementById('pollContainer');
-  const customPitchForm = document.getElementById('customPitchForm');
-  const pitchInput = document.getElementById('pitchInput');
-
-  const confessWall = document.getElementById('confessWall');
-  const confessForm = document.getElementById('confessForm');
-  const confessText = document.getElementById('confessText');
-  const confessAuthor = document.getElementById('confessAuthor');
-
-  const merchGrid = document.getElementById('merchGrid');
-
-  const modalBackdrop = document.getElementById('reelModal');
+  // Reel Modal
+  const reelModal = document.getElementById('reelModal');
   const modalCloseBtn = document.getElementById('modalCloseBtn');
   const modalImg = document.getElementById('modalImg');
+  const modalTag = document.getElementById('modalTag');
   const modalTitle = document.getElementById('modalTitle');
   const modalQuote = document.getElementById('modalQuote');
   const modalCaption = document.getElementById('modalCaption');
-  const modalTag = document.getElementById('modalTag');
   const modalViews = document.getElementById('modalViews');
   const modalLikes = document.getElementById('modalLikes');
   const modalIgBtn = document.getElementById('modalIgBtn');
 
+  // Oracle
+  const oracleInput = document.getElementById('oracleInput');
+  const oracleBtn = document.getElementById('oracleBtn');
+  const oracleSanityBtn = document.getElementById('oracleSanityBtn');
+  const oracleQuoteText = document.getElementById('oracleQuoteText');
+  const oracleCopyBtn = document.getElementById('oracleCopyBtn');
+
+  // Clubhouse (Poll & Confessions)
+  const pollGrid = document.getElementById('pollGrid');
+  const pitchForm = document.getElementById('pitchForm');
+  const pitchInput = document.getElementById('pitchInput');
+  const confessWall = document.getElementById('confessWall');
+  const confessForm = document.getElementById('confessForm');
+  const confessAuthor = document.getElementById('confessAuthor');
+  const confessText = document.getElementById('confessText');
+
+  // Toast Container
   const toastContainer = document.getElementById('toastContainer');
 
-  // Helper: Toast Notifications
-  function showToast(message, duration = 3500) {
+  // ------------------------------------------------------------------------
+  // Toast Notification System
+  // ------------------------------------------------------------------------
+  function showToast(message, duration = 3200) {
+    if (!toastContainer) return;
     const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.innerHTML = `<span>💬</span> <span>${message}</span>`;
+    toast.className = 'toast-msg';
+    toast.textContent = message;
     toastContainer.appendChild(toast);
-    
+
     requestAnimationFrame(() => {
       toast.classList.add('show');
     });
 
     setTimeout(() => {
       toast.classList.remove('show');
-      setTimeout(() => toast.remove(), 400);
+      setTimeout(() => toast.remove(), 250);
     }, duration);
   }
 
-  // Language Switcher Logic
+  // ------------------------------------------------------------------------
+  // Sound Switcher
+  // ------------------------------------------------------------------------
+  function updateSoundUI() {
+    if (!soundToggleBtn) return;
+    if (state.soundEnabled) {
+      soundToggleBtn.textContent = '🔊';
+      soundToggleBtn.title = state.lang === 'he' ? 'צלילים פעילים (לחצי להשתקה)' : 'Sound On (Click to Mute)';
+    } else {
+      soundToggleBtn.textContent = '🔇';
+      soundToggleBtn.title = state.lang === 'he' ? 'מושתק (לחצי להפעלה)' : 'Muted (Click to Unmute)';
+    }
+  }
+
+  if (soundToggleBtn) {
+    soundToggleBtn.addEventListener('click', () => {
+      state.soundEnabled = !state.soundEnabled;
+      localStorage.setItem('liya_sound', state.soundEnabled);
+      updateSoundUI();
+      if (state.soundEnabled) {
+        audio.pop();
+        showToast(state.lang === 'he' ? 'צלילים הופעלו 🔊' : 'Audio enabled 🔊');
+      } else {
+        showToast(state.lang === 'he' ? 'הושתק 🔇' : 'Muted 🔇');
+      }
+    });
+  }
+
+  // ------------------------------------------------------------------------
+  // Internationalization / Language Switcher
+  // ------------------------------------------------------------------------
   function setLanguage(lang) {
     state.lang = lang;
     localStorage.setItem('liya_lang', lang);
@@ -173,492 +192,404 @@ document.addEventListener('DOMContentLoaded', () => {
     htmlDoc.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
     htmlDoc.setAttribute('lang', lang);
 
-    // Update button text
     if (langToggleBtn) {
-      langToggleBtn.innerHTML = isRtl ? '🌐 English' : '🌐 עברית';
+      langToggleBtn.textContent = isRtl ? 'EN' : 'עברית';
     }
 
-    // Update all elements with data-i18n
-    const trans = SITE_DATA.translations[lang];
+    const t = SITE_DATA.translations[lang] || SITE_DATA.translations.he;
+
+    // Static text nodes with data-i18n
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
-      if (trans[key]) {
-        el.textContent = trans[key];
+      if (t[key]) {
+        el.textContent = t[key];
       }
     });
 
-    // Update placeholders
+    // Input placeholders with data-i18n-placeholder
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
       const key = el.getAttribute('data-i18n-placeholder');
-      if (trans[key]) {
-        el.setAttribute('placeholder', trans[key]);
+      if (t[key]) {
+        el.setAttribute('placeholder', t[key]);
       }
     });
 
-    // Update dynamic sections
-    renderMoods();
-    renderSanityQuote();
+    updateSoundUI();
     renderReels();
     renderPoll();
     renderConfessions();
-    renderMerch();
-    renderCynicQuote();
+    displayOracleQuote();
   }
 
-  // Sound Switcher Logic
-  function updateSoundButton() {
-    if (!soundToggleBtn) return;
-    const trans = SITE_DATA.translations[state.lang];
-    if (state.soundEnabled) {
-      soundToggleBtn.innerHTML = `🔊 ${trans.soundOn}`;
-      soundToggleBtn.classList.add('active');
-    } else {
-      soundToggleBtn.innerHTML = `🔇 ${trans.soundOff}`;
-      soundToggleBtn.classList.remove('active');
-    }
-  }
-
-  // Render Daily Mood Check-In Widget
-  function renderMoods() {
-    if (!moodSelector) return;
-    const isRtl = state.lang === 'he';
-
-    moodSelector.innerHTML = '';
-    SITE_DATA.moods.forEach((m, idx) => {
-      const btn = document.createElement('button');
-      btn.className = `mood-btn ${idx === state.activeMoodIndex ? 'active' : ''}`;
-      btn.innerHTML = `
-        <span class="mood-btn-icon">${m.icon}</span>
-        <span class="mood-btn-label">${isRtl ? m.labelHe : m.labelEn}</span>
-      `;
-
-      btn.addEventListener('click', () => {
-        audio.pop();
-        state.activeMoodIndex = idx;
-        document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        moodResponseText.textContent = `"${isRtl ? m.responseHe : m.responseEn}"`;
-      });
-
-      moodSelector.appendChild(btn);
+  if (langToggleBtn) {
+    langToggleBtn.addEventListener('click', () => {
+      audio.pop();
+      setLanguage(state.lang === 'he' ? 'en' : 'he');
     });
-
-    // Initial response
-    const currentMood = SITE_DATA.moods[state.activeMoodIndex];
-    moodResponseText.textContent = `"${isRtl ? currentMood.responseHe : currentMood.responseEn}"`;
   }
 
-  // Emergency Sanity Check Logic
-  function renderSanityQuote() {
-    if (!sanityQuote) return;
-    const isRtl = state.lang === 'he';
-    const item = SITE_DATA.sanityChecks[state.currentSanityIndex];
-    sanityQuote.textContent = `"${isRtl ? item.he : item.en}"`;
-  }
-
-  function triggerSanityBoost() {
-    audio.warmChime();
-    if (sanityDisplayBox) {
-      sanityDisplayBox.style.transform = 'scale(0.97)';
-      setTimeout(() => {
-        state.currentSanityIndex = (state.currentSanityIndex + 1) % SITE_DATA.sanityChecks.length;
-        renderSanityQuote();
-        sanityDisplayBox.style.transform = 'scale(1)';
-        showToast(state.lang === 'he' ? 'שפיות שוחזרה בהצלחה (לפחות ל-10 הדקות הקרובות).' : 'Sanity restored (valid for the next 10 minutes).');
-      }, 200);
-    }
-  }
-
-  // Render Video Vault / Reels
+  // ------------------------------------------------------------------------
+  // Reels Archive & Category Filtering
+  // ------------------------------------------------------------------------
   function renderReels() {
     if (!reelsGrid) return;
     const isRtl = state.lang === 'he';
-    const filtered = SITE_DATA.posts.filter(post => {
+
+    const filtered = SITE_DATA.posts.filter(p => {
       if (state.activeFilter === 'all') return true;
-      return post.category === state.activeFilter;
+      return p.category === state.activeFilter;
     });
 
     reelsGrid.innerHTML = '';
-    filtered.forEach((post) => {
-      const card = document.createElement('div');
-      card.className = 'reel-card';
+
+    filtered.forEach((post, idx) => {
       const title = isRtl ? post.titleHe : post.titleEn;
       const quote = isRtl ? post.quoteHe : post.quoteEn;
       const tag = isRtl ? post.tagHe : post.tagEn;
 
+      const card = document.createElement('article');
+      card.className = 'reel-item-card';
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-label', title);
+
       card.innerHTML = `
-        <div class="reel-media-wrapper">
-          <img class="reel-thumb" src="${post.image}" alt="${title}" loading="lazy" />
-          <div class="reel-tag-badge">${tag}</div>
-          <div class="reel-stats-overlay">
-            <span>👁️ ${post.views}</span>
+        <div class="reel-thumb-box">
+          <img src="${post.image}" alt="${title}" class="reel-thumb-img" loading="lazy" />
+          <div class="reel-overlay-stats">
+            <span>👀 ${post.views}</span>
             <span>❤️ ${post.likes}</span>
           </div>
-          <div class="reel-play-overlay">
-            <div class="play-icon-circle">▶</div>
-          </div>
         </div>
-        <div class="reel-content">
-          <h3 class="reel-title">${title}</h3>
-          <p class="reel-quote">"${quote}"</p>
+        <div class="reel-card-info">
+          <span class="modal-pill" style="font-size: 0.68rem; margin-bottom: 0.4rem; display: inline-block;">${tag}</span>
+          <h3 class="reel-card-title">${title}</h3>
+          <p class="reel-card-quote">"${quote}"</p>
         </div>
       `;
 
       card.addEventListener('click', () => {
-        audio.pop();
-        openModal(post);
+        openReelModal(post);
+      });
+
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openReelModal(post);
+        }
       });
 
       reelsGrid.appendChild(card);
     });
   }
 
-  // Reel Modal Logic
-  function openModal(post) {
+  filterChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      audio.pop();
+      filterChips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      state.activeFilter = chip.getAttribute('data-filter') || 'all';
+      renderReels();
+    });
+  });
+
+  // ------------------------------------------------------------------------
+  // Reel Modal
+  // ------------------------------------------------------------------------
+  function openReelModal(post) {
+    if (!reelModal) return;
+    audio.pop();
+
     const isRtl = state.lang === 'he';
-    const trans = SITE_DATA.translations[state.lang];
+    const title = isRtl ? post.titleHe : post.titleEn;
+    const quote = isRtl ? post.quoteHe : post.quoteEn;
+    const caption = isRtl ? post.captionHe : post.captionEn;
+    const tag = isRtl ? post.tagHe : post.tagEn;
 
-    modalImg.src = post.image;
-    modalImg.alt = isRtl ? post.titleHe : post.titleEn;
-    modalTitle.textContent = isRtl ? post.titleHe : post.titleEn;
-    modalQuote.textContent = `"${isRtl ? post.quoteHe : post.quoteEn}"`;
-    modalCaption.textContent = isRtl ? post.captionHe : post.captionEn;
-    modalTag.textContent = isRtl ? post.tagHe : post.tagEn;
-    modalViews.textContent = `👁️ ${post.views}`;
-    modalLikes.textContent = `❤️ ${post.likes}`;
-    modalIgBtn.href = post.url;
-    modalIgBtn.textContent = trans.openInIg;
+    if (modalImg) {
+      modalImg.src = post.image;
+      modalImg.alt = title;
+    }
+    if (modalTag) modalTag.textContent = tag;
+    if (modalTitle) modalTitle.textContent = title;
+    if (modalQuote) modalQuote.textContent = `"${quote}"`;
+    if (modalCaption) modalCaption.textContent = caption;
+    if (modalViews) modalViews.textContent = `👀 ${post.views} ${isRtl ? 'צפיות' : 'views'}`;
+    if (modalLikes) modalLikes.textContent = `❤️ ${post.likes} ${isRtl ? 'לייקים' : 'likes'}`;
+    if (modalIgBtn) {
+      modalIgBtn.href = post.url;
+      modalIgBtn.textContent = isRtl ? 'צפי בריל המקורי באינסטגרם ↗' : 'Watch Original Reel on Instagram ↗';
+    }
 
-    modalBackdrop.classList.add('open');
+    reelModal.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
 
-  function closeModal() {
-    modalBackdrop.classList.remove('open');
-    if (forLiyaModal) forLiyaModal.classList.remove('open');
+  function closeReelModal() {
+    if (!reelModal) return;
+    audio.pop();
+    reelModal.classList.remove('open');
     document.body.style.overflow = '';
   }
 
-  // Sarcasm 8-Ball Generator
-  let currentQuoteIndex = 0;
-  function renderCynicQuote(isRandom = false) {
-    const isRtl = state.lang === 'he';
-    if (isRandom) {
-      currentQuoteIndex = Math.floor(Math.random() * SITE_DATA.cynicQuotes.length);
-    }
-    const q = SITE_DATA.cynicQuotes[currentQuoteIndex];
-    cynicText.textContent = `"${isRtl ? q.he : q.en}"`;
+  if (modalCloseBtn) {
+    modalCloseBtn.addEventListener('click', closeReelModal);
   }
 
-  function triggerCynicRoast() {
-    audio.buzzer();
-    cynicAnswerBox.style.transform = 'scale(0.97)';
-    cynicText.textContent = state.lang === 'he' ? 'חושבת כמה זה מביך...' : 'Calculating how embarrassing this is...';
-    
+  if (reelModal) {
+    reelModal.addEventListener('click', (e) => {
+      if (e.target === reelModal) closeReelModal();
+    });
+  }
+
+  // ------------------------------------------------------------------------
+  // The Cynic Oracle & Reality Check
+  // ------------------------------------------------------------------------
+  function displayOracleQuote(quoteObj) {
+    if (!oracleQuoteText) return;
+    const isRtl = state.lang === 'he';
+    const activeQuote = quoteObj || SITE_DATA.cynicQuotes[state.currentQuoteIndex];
+    const text = isRtl ? activeQuote.he : activeQuote.en;
+
+    oracleQuoteText.style.opacity = '0';
+    oracleQuoteText.style.transform = 'translateY(5px)';
     setTimeout(() => {
-      cynicAnswerBox.style.transform = 'scale(1)';
-      renderCynicQuote(true);
-      cynicAnswerBox.classList.add('active');
-    }, 450);
+      oracleQuoteText.textContent = `"${text}"`;
+      oracleQuoteText.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+      oracleQuoteText.style.opacity = '1';
+      oracleQuoteText.style.transform = 'translateY(0)';
+    }, 150);
   }
 
-  // Render Poll Options
-  function renderPoll() {
-    if (!pollContainer) return;
-    const isRtl = state.lang === 'he';
-    const trans = SITE_DATA.translations[state.lang];
+  if (oracleBtn) {
+    oracleBtn.addEventListener('click', () => {
+      audio.pop();
+      const query = (oracleInput ? oracleInput.value.trim() : '');
+      
+      // Advance to next or random quote
+      let nextIndex;
+      do {
+        nextIndex = Math.floor(Math.random() * SITE_DATA.cynicQuotes.length);
+      } while (nextIndex === state.currentQuoteIndex && SITE_DATA.cynicQuotes.length > 1);
 
-    let totalVotes = 0;
+      state.currentQuoteIndex = nextIndex;
+      displayOracleQuote(SITE_DATA.cynicQuotes[nextIndex]);
+
+      if (query) {
+        showToast(state.lang === 'he' ? 'הפאנץ\' שוגר בהתאמה אישית 💥' : 'Punchline delivered 💥');
+      }
+    });
+  }
+
+  if (oracleSanityBtn) {
+    oracleSanityBtn.addEventListener('click', () => {
+      audio.warmChime();
+      const sanityObj = {
+        he: "בדיקת מערכות דחופה: שחררי את הלסת. תורידי את הכתפיים. קחי שלוק מים עכשיו. אנחנו מרחפים על סלע בחלל וכל השאר פשוט לא משנה.",
+        en: "Urgent system check: Unclench your jaw. Drop your shoulders down. Take a sip of cold water. We're floating on a space rock and none of it matters."
+      };
+      displayOracleQuote(sanityObj);
+      showToast(state.lang === 'he' ? 'נשימה עמוקה... שחררי את הלסת 🛟' : 'Deep breath... unclench your jaw 🛟');
+    });
+  }
+
+  if (oracleCopyBtn) {
+    oracleCopyBtn.addEventListener('click', () => {
+      audio.pop();
+      const text = oracleQuoteText ? oracleQuoteText.textContent.replace(/^"|"$/g, '') : '';
+      if (text) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast(state.lang === 'he' ? 'הציטוט הועתק ללוח! 📋' : 'Quote copied to clipboard! 📋');
+        }).catch(() => {
+          showToast(state.lang === 'he' ? 'הועתק!' : 'Copied!');
+        });
+      }
+    });
+  }
+
+  // ------------------------------------------------------------------------
+  // The Clubhouse & Interactive Poll
+  // ------------------------------------------------------------------------
+  function renderPoll() {
+    if (!pollGrid) return;
+    const isRtl = state.lang === 'he';
+
+    // Calculate total votes across all options
+    let totalVotesSum = 0;
     SITE_DATA.pollOptions.forEach(opt => {
-      const stored = state.votes[opt.id] || 0;
-      totalVotes += (opt.votes + stored);
+      const userAdded = state.votes[opt.id] || 0;
+      totalVotesSum += (opt.votes + userAdded);
     });
 
-    pollContainer.innerHTML = '';
+    pollGrid.innerHTML = '';
+
     SITE_DATA.pollOptions.forEach(opt => {
-      const userExtra = state.votes[opt.id] || 0;
-      const votesCount = opt.votes + userExtra;
-      const percent = totalVotes > 0 ? Math.round((votesCount / totalVotes) * 100) : 0;
+      const userAdded = state.votes[opt.id] || 0;
+      const count = opt.votes + userAdded;
+      const pct = totalVotesSum > 0 ? Math.round((count / totalVotesSum) * 100) : 0;
       const hasVoted = state.votedOptions.includes(opt.id);
 
-      const card = document.createElement('div');
-      card.className = `poll-card ${hasVoted ? 'voted' : ''}`;
-      card.innerHTML = `
-        <h3>${isRtl ? opt.titleHe : opt.titleEn}</h3>
-        <p>${isRtl ? opt.descHe : opt.descEn}</p>
-        <div class="poll-meta">
-          <span>${percent}%</span>
-          <span>${votesCount.toLocaleString()} ${isRtl ? 'קולות' : 'votes'}</span>
+      const title = isRtl ? opt.titleHe : opt.titleEn;
+      const desc = isRtl ? opt.descHe : opt.descEn;
+      const voteLabel = hasVoted ? (isRtl ? 'הצבעתם ✓' : 'Voted ✓') : (isRtl ? 'הצביעו' : 'Vote');
+
+      const item = document.createElement('div');
+      item.className = `poll-item ${hasVoted ? 'voted' : ''}`;
+      item.innerHTML = `
+        <div class="poll-item-header">
+          <span class="poll-item-title">${title}</span>
+          <span class="poll-item-pct">${pct}% (${count.toLocaleString()})</span>
         </div>
-        <div class="poll-progress-track">
-          <div class="poll-progress-fill" style="width: ${percent}%"></div>
+        <p class="poll-item-desc">${desc}</p>
+        <div class="poll-meter-track">
+          <div class="poll-meter-fill" style="width: ${pct}%"></div>
         </div>
-        <button class="btn-vote" data-id="${opt.id}">
-          ${hasVoted ? `✓ ${trans.pitchVoted}` : trans.pitchVoteBtn}
+        <button class="btn-vote-trigger" ${hasVoted ? 'disabled' : ''}>
+          ${voteLabel}
         </button>
       `;
 
-      const voteBtn = card.querySelector('.btn-vote');
-      voteBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        castVote(opt.id);
+      const btn = item.querySelector('.btn-vote-trigger');
+      btn.addEventListener('click', () => {
+        if (state.votedOptions.includes(opt.id)) return;
+        audio.ding();
+        state.votes[opt.id] = (state.votes[opt.id] || 0) + 1;
+        state.votedOptions.push(opt.id);
+        localStorage.setItem('liya_votes', JSON.stringify(state.votes));
+        localStorage.setItem('liya_voted_options', JSON.stringify(state.votedOptions));
+        renderPoll();
+        showToast(isRtl ? 'ההצבעה נקלטה בהצלחה! 🗳️' : 'Vote recorded! 🗳️');
       });
 
-      pollContainer.appendChild(card);
+      pollGrid.appendChild(item);
     });
   }
 
-  function castVote(optId) {
-    if (state.votedOptions.includes(optId)) {
-      showToast(state.lang === 'he' ? 'כבר הצבעת לפיצ\'ר הזה!' : 'You already voted for this feature!');
-      return;
-    }
+  if (pitchForm) {
+    pitchForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const val = pitchInput ? pitchInput.value.trim() : '';
+      if (!val) return;
 
-    audio.ding();
-    state.votes[optId] = (state.votes[optId] || 0) + 1;
-    state.votedOptions.push(optId);
+      audio.ding();
+      state.userPitches.push({ text: val, timestamp: new Date().toISOString() });
+      localStorage.setItem('liya_user_pitches', JSON.stringify(state.userPitches));
+      if (pitchInput) pitchInput.value = '';
 
-    localStorage.setItem('liya_votes', JSON.stringify(state.votes));
-    localStorage.setItem('liya_voted_options', JSON.stringify(state.votedOptions));
-
-    renderPoll();
-    showToast(state.lang === 'he' ? 'ההצבעה נקלטה! ליה קיבלה את המסר.' : 'Vote registered! Liya received the hint.');
+      showToast(state.lang === 'he' ? 'תודה על הרעיון! נשמר עבור ליה ✨' : 'Idea saved for Liya! ✨');
+    });
   }
 
-  // Render Confessions Wall
+  // ------------------------------------------------------------------------
+  // Confessions Wall
+  // ------------------------------------------------------------------------
   function renderConfessions() {
     if (!confessWall) return;
     const isRtl = state.lang === 'he';
-    const all = [...state.confessions, ...SITE_DATA.confessions];
+
+    // Combine user confessions with default data
+    const all = [...state.userConfessions, ...SITE_DATA.confessions];
 
     confessWall.innerHTML = '';
-    all.forEach(item => {
-      const card = document.createElement('div');
-      card.className = 'confess-card';
-      const author = isRtl ? item.author : (item.authorEn || item.author);
-      const text = isRtl ? item.textHe : (item.textEn || item.textHe);
+    all.forEach(c => {
+      const author = isRtl ? (c.author || 'אנונימית') : (c.authorEn || c.author || 'Anonymous');
+      const text = isRtl ? (c.textHe || c.text) : (c.textEn || c.text);
+      const time = isRtl ? (c.timestamp || 'לאחרונה') : (c.timestampEn || c.timestamp || 'Recently');
 
+      const card = document.createElement('div');
+      card.className = 'confess-bubble';
       card.innerHTML = `
-        <div class="confess-header">
-          <span class="confess-author">💀 ${author}</span>
-          <span class="confess-time">${item.timestamp}</span>
+        <div class="confess-meta-row">
+          <span class="confess-who">💀 ${author}</span>
+          <span class="confess-when">${time}</span>
         </div>
-        <p class="confess-text">"${text}"</p>
+        <p class="confess-message">${text}</p>
       `;
       confessWall.appendChild(card);
     });
   }
 
-  // Render Concept Merch
-  function renderMerch() {
-    if (!merchGrid) return;
-    const isRtl = state.lang === 'he';
-    const trans = SITE_DATA.translations[state.lang];
+  if (confessForm) {
+    confessForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const textVal = confessText ? confessText.value.trim() : '';
+      if (!textVal) return;
 
-    merchGrid.innerHTML = '';
-    SITE_DATA.merch.forEach(item => {
-      const card = document.createElement('div');
-      card.className = 'merch-card';
-      const title = isRtl ? item.titleHe : item.titleEn;
-      const desc = isRtl ? item.descHe : item.descEn;
-      const badge = isRtl ? item.badgeHe : item.badgeEn;
-      const price = isRtl ? item.price : item.priceUsd;
+      audio.ding();
+      const authorVal = (confessAuthor ? confessAuthor.value.trim() : '') || (state.lang === 'he' ? 'אנונימית בחרדה' : 'Anxious Anon');
+      const newEntry = {
+        author: authorVal,
+        authorEn: authorVal,
+        textHe: textVal,
+        textEn: textVal,
+        timestamp: state.lang === 'he' ? 'ממש עכשיו' : 'Just now',
+        timestampEn: 'Just now'
+      };
 
-      card.innerHTML = `
-        <div class="merch-img-wrapper">
-          <img class="merch-img" src="${item.imageMock}" alt="${title}" loading="lazy" />
-          <div class="merch-badge">${badge}</div>
-        </div>
-        <div class="merch-content">
-          <h3>${title}</h3>
-          <p>${desc}</p>
-          <div class="merch-footer">
-            <span class="merch-price">${price}</span>
-            <button class="btn-pill btn-buy" data-id="${item.id}">
-              ${trans.merchBuyBtn}
-            </button>
-          </div>
-        </div>
-      `;
+      state.userConfessions.unshift(newEntry);
+      localStorage.setItem('liya_user_confessions', JSON.stringify(state.userConfessions));
 
-      const buyBtn = card.querySelector('.btn-buy');
-      buyBtn.addEventListener('click', () => {
-        audio.pop();
-        showToast(trans.merchToast, 4000);
-      });
+      if (confessText) confessText.value = '';
+      if (confessAuthor) confessAuthor.value = '';
 
-      merchGrid.appendChild(card);
+      renderConfessions();
+      showToast(state.lang === 'he' ? 'הווידוי שוגר לריק בהצלחה! 💀' : 'Confession dropped into the void! 💀');
     });
   }
 
-  // Setup Event Handlers
-  function setupEvents() {
-    // "Hey Liya!" Modal triggers
-    if (forLiyaBtn && forLiyaModal) {
-      forLiyaBtn.addEventListener('click', () => {
-        audio.warmChime();
-        forLiyaModal.classList.add('open');
-        document.body.style.overflow = 'hidden';
-      });
-    }
+  // ------------------------------------------------------------------------
+  // VIP "Hey Liya!" Modal
+  // ------------------------------------------------------------------------
+  function openLiyaModal() {
+    if (!forLiyaModal) return;
+    audio.ding();
+    forLiyaModal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
 
-    if (liyaModalCloseBtn) {
-      liyaModalCloseBtn.addEventListener('click', closeModal);
-    }
-    if (liyaCloseActionBtn) {
-      liyaCloseActionBtn.addEventListener('click', closeModal);
-    }
+  function closeLiyaModal() {
+    if (!forLiyaModal) return;
+    audio.pop();
+    forLiyaModal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
 
-    if (copySiteLinkBtn) {
-      copySiteLinkBtn.addEventListener('click', () => {
-        audio.ding();
-        navigator.clipboard.writeText(window.location.href).then(() => {
-          showToast(state.lang === 'he' ? 'הקישור הועתק! שימי אותו בסטורי של ליה 🤳' : 'Link copied! Drop it on Liya\'s story 🤳');
-        });
-      });
-    }
+  if (forLiyaBtn) {
+    forLiyaBtn.addEventListener('click', openLiyaModal);
+  }
 
-    // Sanity first-aid button
-    if (sanityBtn) {
-      sanityBtn.addEventListener('click', triggerSanityBoost);
-    }
+  if (liyaModalCloseBtn) {
+    liyaModalCloseBtn.addEventListener('click', closeLiyaModal);
+  }
 
-    // Language toggle
-    if (langToggleBtn) {
-      langToggleBtn.addEventListener('click', () => {
-        audio.pop();
-        const nextLang = state.lang === 'he' ? 'en' : 'he';
-        setLanguage(nextLang);
-        updateSoundButton();
-      });
-    }
-
-    // Sound toggle
-    if (soundToggleBtn) {
-      soundToggleBtn.addEventListener('click', () => {
-        state.soundEnabled = !state.soundEnabled;
-        localStorage.setItem('liya_sound', state.soundEnabled);
-        if (state.soundEnabled) audio.ding();
-        updateSoundButton();
-      });
-    }
-
-    // Filter buttons
-    filterBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        audio.pop();
-        filterBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        state.activeFilter = btn.getAttribute('data-filter');
-        renderReels();
-      });
-    });
-
-    // Cynic 8-Ball Roaster
-    if (cynicBtn) {
-      cynicBtn.addEventListener('click', triggerCynicRoast);
-    }
-    if (cynicInput) {
-      cynicInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          triggerCynicRoast();
-        }
-      });
-    }
-
-    // Copy Quote
-    if (cynicCopyBtn) {
-      cynicCopyBtn.addEventListener('click', () => {
-        audio.pop();
-        const textToCopy = cynicText.textContent.replace(/^"|"$/g, '');
-        navigator.clipboard.writeText(textToCopy).then(() => {
-          showToast(SITE_DATA.translations[state.lang].cynicCopied);
-        });
-      });
-    }
-
-    // Custom Pitch Form
-    if (customPitchForm) {
-      customPitchForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const text = pitchInput.value.trim();
-        if (!text) return;
-
-        audio.ding();
-        state.userPitches.push({
-          text,
-          date: new Date().toISOString()
-        });
-        localStorage.setItem('liya_user_pitches', JSON.stringify(state.userPitches));
-        pitchInput.value = '';
-
-        const msg = state.lang === 'he' 
-          ? 'ההצעה נשמרה! אם ליה תאהב אותה, אולי לא תתעלם ממנה.'
-          : 'Pitch saved! If Liya likes it, she might not ignore it.';
-        showToast(msg);
-      });
-    }
-
-    // Confession Form
-    if (confessForm) {
-      confessForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const text = confessText.value.trim();
-        if (!text) return;
-
-        audio.ding();
-        const authorVal = confessAuthor.value.trim() || (state.lang === 'he' ? 'משתמש אנונימי' : 'Anonymous');
-        const newConfession = {
-          author: authorVal,
-          authorEn: authorVal,
-          textHe: text,
-          textEn: text,
-          timestamp: state.lang === 'he' ? 'עכשיו' : 'Just now',
-          verified: false
-        };
-
-        state.confessions.unshift(newConfession);
-        localStorage.setItem('liya_user_confessions', JSON.stringify(state.confessions));
-
-        confessText.value = '';
-        confessAuthor.value = '';
-        renderConfessions();
-
-        showToast(state.lang === 'he' ? 'הווידוי נזרק לחלל הריק! תודה על הכנות.' : 'Confession dropped into the void! Thank you for the honesty.');
-      });
-    }
-
-    // Modal close events
-    if (modalCloseBtn) {
-      modalCloseBtn.addEventListener('click', closeModal);
-    }
-
-    if (modalBackdrop) {
-      modalBackdrop.addEventListener('click', (e) => {
-        if (e.target === modalBackdrop) {
-          closeModal();
-        }
-      });
-    }
-    if (forLiyaModal) {
-      forLiyaModal.addEventListener('click', (e) => {
-        if (e.target === forLiyaModal) {
-          closeModal();
-        }
-      });
-    }
-
-    // Keyboard shortcuts
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeModal();
-      }
+  if (forLiyaModal) {
+    forLiyaModal.addEventListener('click', (e) => {
+      if (e.target === forLiyaModal) closeLiyaModal();
     });
   }
 
-  // Initialization
+  if (copySiteLinkBtn) {
+    copySiteLinkBtn.addEventListener('click', () => {
+      audio.ding();
+      const siteUrl = window.location.origin.includes('localhost') ? 'https://notliya.com' : window.location.href;
+      navigator.clipboard.writeText(siteUrl).then(() => {
+        showToast(state.lang === 'he' ? 'קישור האתר הועתק! 🤳' : 'Site link copied! 🤳');
+      }).catch(() => {
+        showToast(state.lang === 'he' ? 'הקישור הועתק!' : 'Link copied!');
+      });
+    });
+  }
+
+  // Global Keyboard Navigation (ESC to close any modal)
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (reelModal && reelModal.classList.contains('open')) closeReelModal();
+      if (forLiyaModal && forLiyaModal.classList.contains('open')) closeLiyaModal();
+    }
+  });
+
+  // ------------------------------------------------------------------------
+  // Initialize App
+  // ------------------------------------------------------------------------
   setLanguage(state.lang);
-  updateSoundButton();
-  setupEvents();
-  renderCynicQuote(true);
 });
