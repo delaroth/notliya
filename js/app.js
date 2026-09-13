@@ -957,60 +957,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Run VIP View Engine
   initVipViewEngine();
 
-  // Voice Note Audio Player Logic
-  const voicePlayBtn = document.getElementById('voicePlayBtn');
-  const voicePlayIcon = document.getElementById('voicePlayIcon');
-  const creatorAudioEl = document.getElementById('creatorAudioEl');
-  const voiceNoteCard = document.querySelector('.voice-note-card');
-
-  if (voicePlayBtn && creatorAudioEl) {
-    let isPlayingVoice = false;
-
-    function stopVoice() {
-      isPlayingVoice = false;
-      if (voicePlayIcon) voicePlayIcon.textContent = '▶';
-      if (voiceNoteCard) voiceNoteCard.classList.remove('playing');
-      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-    }
-
-    voicePlayBtn.addEventListener('click', () => {
-      if (isPlayingVoice) {
-        creatorAudioEl.pause();
-        stopVoice();
-      } else {
-        audio.pop();
-        creatorAudioEl.play().then(() => {
-          isPlayingVoice = true;
-          if (voicePlayIcon) voicePlayIcon.textContent = '⏸';
-          if (voiceNoteCard) voiceNoteCard.classList.add('playing');
-        }).catch(() => {
-          // Fallback to speech synthesis or pleasant reading feedback
-          if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-            const speechText = "היי ליה, זה לוי. ראיתי ששאלת בסטורי איזה אתר לבנות, וזה נשמע לי כמו פרויקט מגניב אז בניתי לך אותו בסופ״ש ושמרתי לך את הדומיין. מקווה שקלעתי לסטייל ולהומור שלך. אם תרצי שינויים בעיצוב או בבדיחות, תגידי לי. כתבתי לך באינסטגרם לוי הלפרין, ויש פה גם קישור לוואטסאפ שלי. תהני!";
-            const utter = new SpeechSynthesisUtterance(speechText);
-            utter.lang = 'he-IL';
-            utter.rate = 0.95;
-            utter.onend = stopVoice;
-            utter.onerror = stopVoice;
-            isPlayingVoice = true;
-            if (voicePlayIcon) voicePlayIcon.textContent = '⏸';
-            if (voiceNoteCard) voiceNoteCard.classList.add('playing');
-            window.speechSynthesis.speak(utter);
-          } else {
-            audio.warmChime();
-            showToast("הטקסט המלא מופיע במכתב האישי ✍️");
-          }
-        });
-      }
-    });
-
-    creatorAudioEl.addEventListener('ended', stopVoice);
-    creatorAudioEl.addEventListener('pause', () => {
-      if (!creatorAudioEl.seeking) stopVoice();
-    });
-  }
-
   if (copySiteLinkBtn) {
     copySiteLinkBtn.addEventListener('click', () => {
       audio.ding();
