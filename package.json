@@ -2,12 +2,5 @@
   "name": "not-liya-website",
   "version": "1.0.0",
   "description": "Custom interactive website themed and built for influencer @not.liya",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
-  },
-  "keywords": ["not.liya", "influencer", "dark-humor", "portfolio", "hebrew", "creator-hub"],
-  "author": "Antigravity",
-  "license": "MIT"
+  "private": true
 }
