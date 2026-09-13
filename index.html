@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="he" dir="rtl" data-theme="emo">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,7 +9,7 @@
   <meta name="description" content="האתר של ליה (@not.liya) - פאנצ'ים שיכלתי לזרוק, אהבה שיכלתי לקבל, והפינה האינטימית של הקהילה." />
   <meta property="og:title" content="ליה • @not.liya | notliya.com" />
   <meta property="og:description" content="פאנצ'ים שיכלתי לזרוק ואהבה שיכלתי לקבל. נבנה עבור ליה." />
-  <meta property="og:image" content="images/art/portrait.jpg" />
+  <meta property="og:image" content="images/art/balcony.jpg" />
   <meta property="og:type" content="website" />
 
   <!-- Google Fonts: Warm Human Pairings + Handwritten Notes -->
@@ -22,6 +22,16 @@
   <link rel="icon" type="image/jpeg" href="images/avatar.jpg" />
 </head>
 <body>
+
+  <!-- THEME PALETTE SELECTOR BAR -->
+  <div id="themePaletteBar" class="theme-palette-bar">
+    <div class="container theme-bar-inner">
+      <span class="theme-bar-label" data-i18n="themeBarTitle">🎨 פלטת צבעים לבחירה:</span>
+      <div id="themeChipsContainer" class="theme-chips-wrap">
+        <!-- Rendered dynamically by app.js with live color swatches -->
+      </div>
+    </div>
+  </div>
 
   <!-- MINIMAL TICKER -->
   <div class="ticker-strip">
@@ -55,6 +65,7 @@
 
       <nav class="nav-center">
         <a href="#stories" class="nav-item" data-i18n="navLore">הסיפורים</a>
+        <a href="#gallery" class="nav-item" data-i18n="navGallery">גלריית איורים</a>
         <a href="#vault" class="nav-item" data-i18n="navVault">סרטונים</a>
         <a href="#oracle" class="nav-item" data-i18n="navOracle">הפאנצ'ומטר</a>
         <a href="#clubhouse" class="nav-item" data-i18n="navClubhouse">המועדון</a>
@@ -118,6 +129,9 @@
           <a href="#vault" class="btn-hero-primary" data-i18n="btnVault">
             לכל הסרטונים 🎬
           </a>
+          <a href="#gallery" class="btn-hero-ghost" data-i18n="btnGallery">
+            גלריית האיורים 🎨
+          </a>
           <a href="#oracle" class="btn-hero-ghost" data-i18n="btnOracle">
             תני לי פאנץ' 🔮
           </a>
@@ -155,13 +169,13 @@
             <div class="polaroid-caption">ליה במציאות (irl) ✨</div>
           </div>
 
-          <!-- Stylized Illustrated Polaroid (Overlapping) -->
-          <div class="polaroid-card polaroid-art">
+          <!-- Stylized Illustrated Polaroid (Interactive: Click to Cycle) -->
+          <div id="heroArtPolaroid" class="polaroid-card polaroid-art" title="לחצו להחלפת איור 🎨">
             <div class="polaroid-pin">📌</div>
             <div class="polaroid-frame">
-              <img src="images/art/portrait.jpg" alt="ליה באיור" class="polaroid-img" />
+              <img id="heroArtImg" src="images/art/balcony.jpg" alt="ליה באיור" class="polaroid-img" />
             </div>
-            <div class="polaroid-caption">הגרסה המצוירת 🎨</div>
+            <div id="heroArtCaption" class="polaroid-caption">קפה בשקיעה 🌇 (לחצי להחלפה)</div>
           </div>
 
           <!-- Handwritten Note -->
@@ -185,30 +199,46 @@
       </div>
 
       <div class="stories-grid">
-        <!-- Story 1: Iced Coffee & Bed Rotting -->
+        <!-- Story 1: Bedrot Burrito Blanket -->
         <article class="story-card">
           <div class="story-visual-wrap">
-            <img src="images/art/coffee.jpg" alt="קפה קר במיטה" class="story-main-img" />
-            <!-- Real video badge overlay -->
+            <img src="images/art/bedrot.jpg" alt="בוריטו שמיכות" class="story-main-img" />
             <div class="real-badge-overlay" title="מתוך הסרטון האמיתי">
               <img src="images/post_4_DcwHOeJiqKg.jpg" alt="ליה בסרטון" class="real-badge-img" />
-              <span class="real-badge-label">בסרטון המקורי ☕</span>
+              <span class="real-badge-label">בסרטון המקורי 👻</span>
             </div>
           </div>
           <div class="story-body">
             <span class="story-tag">שקט נפשי במיטה</span>
-            <h3>קפה קר, שמיכה, ואפס רצון לצאת מהבית</h3>
+            <h3>בוריטו שמיכות, קפה קר, ואפס רצון לצאת</h3>
             <p>
-              למחוק את כל הרעש מסביב היה הדבר הכי טוב שעשיתי. לפעמים להישאר במיטה עם קפה קר ב-14:00 ולבהות בתקרה זו לא עצלנות – זה נטו הישרדות. אם מתעלמים מבעיות מספיק זמן הן אולי לא נעלמות, אבל לפחות יש מזגן ושקט.
+              למחוק את כל הרעש מסביב היה הדבר הכי טוב שעשיתי. להישאר במיטה עטופה כמו בוריטו ב-14:00 ולבהות בתקרה זו לא עצלנות – זה נטו הישרדות. אם מתעלמים מבעיות מספיק זמן הן אולי לא נעלמות, אבל לפחות יש מזגן ושקט.
             </p>
           </div>
         </article>
 
-        <!-- Story 2: The Whey Protein Gym Bro -->
+        <!-- Story 2: Balcony Sunset Thoughts -->
+        <article class="story-card">
+          <div class="story-visual-wrap">
+            <img src="images/art/balcony.jpg" alt="קפה קר במרפסת" class="story-main-img" />
+            <div class="real-badge-overlay" title="מתוך הסרטון על החיים">
+              <img src="images/post_6_DR2KOUtAh0b.jpg" alt="ליה במרפסת" class="real-badge-img" />
+              <span class="real-badge-label">הרנט על החיים 🌇</span>
+            </div>
+          </div>
+          <div class="story-body">
+            <span class="story-tag">שקיעה בתל אביב</span>
+            <h3>קפה קר במרפסת: איך שרדנו עד עכשיו?</h3>
+            <p>
+              סוודר אוברסייז, קפה קר, ובריזה של שקיעה. לפעמים כל מה שצריך זה לשבת כמה דקות בשקט, בלי סמול-טוק מעיק ובלי אנשים ששואלים 'מה המטרות שלך לחמש השנים הקרובות'. שום מטרות, תודה.
+            </p>
+          </div>
+        </article>
+
+        <!-- Story 3: The Whey Protein Gym Bro -->
         <article class="story-card">
           <div class="story-visual-wrap">
             <img src="images/art/protein.jpg" alt="חלבון ושייקרים" class="story-main-img" />
-            <!-- Real video badge overlay -->
             <div class="real-badge-overlay" title="מתוך הסרטון על הבן זוג">
               <img src="images/post_11_DRwvLwlE1zb.jpg" alt="ליה והחלבון" class="real-badge-img" />
               <span class="real-badge-label">הרנט על החלבון 🏋️</span>
@@ -223,11 +253,10 @@
           </div>
         </article>
 
-        <!-- Story 3: The 0.7mm Mechanical Pencil -->
+        <!-- Story 4: The 0.7mm Mechanical Pencil -->
         <article class="story-card">
           <div class="story-visual-wrap">
             <img src="images/art/pencil.jpg" alt="טראומת עט-עיפרון" class="story-main-img" />
-            <!-- Real video badge overlay -->
             <div class="real-badge-overlay" title="מתוך הסרטון על היסודי">
               <img src="images/post_12_DRchG3kgm_I.jpg" alt="ליה והעט-עיפרון" class="real-badge-img" />
               <span class="real-badge-label">הטראומה המקורית ✏️</span>
@@ -241,6 +270,23 @@
             </p>
           </div>
         </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- CREATIVE ARTWORK GALLERY -->
+  <section id="gallery" class="gallery-section">
+    <div class="container">
+      <div class="section-heading-wrap">
+        <span class="section-kicker">ART COLLECTION</span>
+        <h2 class="section-headline" data-i18n="galleryTitle">גלריית האיורים והעולם של ליה</h2>
+        <p class="section-dek" data-i18n="gallerySubtitle">
+          כל האילוסטרציות המקוריות שנוצרו במיוחד עבור ליה בסגנונות שונים.
+        </p>
+      </div>
+
+      <div id="artGalleryGrid" class="art-gallery-grid">
+        <!-- Rendered dynamically by app.js -->
       </div>
     </div>
   </section>

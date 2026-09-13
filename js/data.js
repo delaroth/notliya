@@ -9,6 +9,8 @@ const SITE_DATA = {
     artCoffee: "images/art/coffee.jpg",
     artProtein: "images/art/protein.jpg",
     artPencil: "images/art/pencil.jpg",
+    artBalcony: "images/art/balcony.jpg",
+    artBedrot: "images/art/bedrot.jpg",
     avatar: "images/avatar.jpg",
     creatorNoteHe: "היי ליה 👋 ראיתי ששאלת בסטורי איזה אתר לבנות, וזה נשמע לי כמו פרויקט ממש מעניין אז פשוט ישבתי ובניתי לך אחד. קניתי גם את notliya.com כי חבל שמישהו אחר יקח. אם בא לך עליו – רק תגידי, אני מעביר לך את כל הגישה והניהול באהבה.",
     creatorNoteEn: "Hey Liya 👋 saw your story asking what site to build, and it sounded like such a fun project so I sat down and made one for you. I also grabbed notliya.com so nobody else takes it. If you want it, just let me know and I'll hand over full keys and ownership.",
@@ -18,19 +20,138 @@ const SITE_DATA = {
     statusEn: "Awake at 3 AM, bed-rotting"
   },
 
-  stories: [
+  themes: [
+    {
+      id: "emo",
+      nameHe: "חדר אימו (ברירת מחדל)",
+      nameEn: "Emo Bedroom (Default)",
+      descHe: "גרפיט רך, סגול לבנדר מאובק וקרם נעים",
+      descEn: "Soft graphite, dusty lilac & warm cream",
+      swatch: ["#141316", "#bda0e8", "#f4dfb5"]
+    },
+    {
+      id: "zine",
+      nameHe: "זין רטרו (Sepia & Clay)",
+      nameEn: "Vintage Zine (Sepia & Clay)",
+      descHe: "נייר קפה חמים, טרקוטה כפרית וגווני עיתון",
+      descEn: "Warm coffee paper, rustic terracotta & analog zine",
+      swatch: ["#191613", "#e07a5f", "#81b29a"]
+    },
+    {
+      id: "matcha",
+      nameHe: "מאצ'ה גרנאג' (Moss & Oat)",
+      nameEn: "Matcha Grunge (Moss & Oat)",
+      descHe: "זית עמוק, ירוק מאצ'ה מרגיע ופשתן",
+      descEn: "Deep olive, calming matcha green & linen",
+      swatch: ["#121512", "#a7c49d", "#f0ead2"]
+    },
+    {
+      id: "twilight",
+      nameHe: "סייבר טוויליט (Y2K Dusk)",
+      nameEn: "Cyber Twilight (Y2K Dusk)",
+      descHe: "לילה סגלגל עמוק, מנטה פסטל ומג'נטה",
+      descEn: "Deep midnight violet, pastel mint & magenta",
+      swatch: ["#0e0d18", "#a78bfa", "#6ee7b7"]
+    },
+    {
+      id: "cream-day",
+      nameHe: "קרם שיק (Light & Minimal)",
+      nameEn: "Cream Chic (Light & Minimal)",
+      descHe: "שיבולת שועל, נייר בהיר וטרקוטה חמימה",
+      descEn: "Warm oat, bright paper & earthy terracotta",
+      swatch: ["#f5f2eb", "#b05d47", "#1c1a17"]
+    }
+  ],
+
+  artGallery: [
+    {
+      id: "balcony",
+      image: "images/art/balcony.jpg",
+      titleHe: "שקיעה בתל אביב עם קפה קר",
+      titleEn: "Sunset Balcony in Tel Aviv",
+      tagHe: "סגנון אנימה אינדי 🌇",
+      tagEn: "Indie Anime 🌇",
+      descHe: "סוודר אוברסייז, קפה קר עם קש, ורוח ערב שמנקה את הראש מכל השטויות.",
+      descEn: "Oversized knit sweater, iced coffee with a straw, and twilight rooftop peace."
+    },
+    {
+      id: "bedrot",
+      image: "images/art/bedrot.jpg",
+      titleHe: "בוריטו שמיכות ב-3 בלילה",
+      titleEn: "3 AM Burrito Blanket Bedrot",
+      tagHe: "הדחקה מקצועית 👻",
+      tagEn: "Professional Repression 👻",
+      descHe: "עטופה בשמיכה כמו בוריטו, בוהה באור הטלפון לצד רוח רפאים חמודה של חרדה קיומית.",
+      descEn: "Swaddled like a burrito, phone light glowing, chatting with the cute existential dread ghost."
+    },
+    {
+      id: "portrait",
+      image: "images/art/portrait.jpg",
+      titleHe: "הדיוקן האדיש המקורי",
+      titleEn: "The Original Deadpan Portrait",
+      tagHe: "ציניות טהורה 🎨",
+      tagEn: "Pure Deadpan 🎨",
+      descHe: "שיער גלי כהה, עגיל ספטום, ומבט שאומר בדיוק מה אני חושבת על המין האנושי.",
+      descEn: "Dark wavy locks, silver septum ring, and that signature unbothered side-eye."
+    },
     {
       id: "coffee",
-      artImage: "images/art/coffee.jpg",
+      image: "images/art/coffee.jpg",
+      titleHe: "אייס קפה והדחקה פעילה",
+      titleEn: "Iced Coffee & Radical Peace",
+      tagHe: "שקט נפשי ☕",
+      tagEn: "Peace of Mind ☕",
+      descHe: "הבעיות לא ייעלמו אם תתעלמי מהן, אבל לפחות עם קפה קר יש שקט ומזגן.",
+      descEn: "Ignoring your life won't solve it, but at least cold brew tastes divine in bed."
+    },
+    {
+      id: "protein",
+      image: "images/art/protein.jpg",
+      titleHe: "חלבון ושייקרים מסוכנים",
+      titleEn: "Whey Isolate Invasion",
+      tagHe: "רוסט על ג'ימברו 🏋️",
+      tagEn: "Gym-Bro Roast 🏋️",
+      descHe: "החיים עם בן זוג שמודד גרמים של איזולט ב-2 בלילה ושייקרים שמסכנים את שלום הציבור.",
+      descEn: "Life in the shadow of lukewarm protein water and biohazard shakers in the sink."
+    },
+    {
+      id: "pencil",
+      image: "images/art/pencil.jpg",
+      titleHe: "טראומת העט-עיפרון (0.7 מ״מ)",
+      titleEn: "The 0.7mm Mechanical Pencil",
+      tagHe: "סיפור מקור ✏️",
+      tagEn: "Origin Story ✏️",
+      descHe: "הילד מכיתה ד' שהפך את המכנסיים שלי למטרה לשפיצים. הטראומה שמימנה אישיות שלמה.",
+      descEn: "The 4th grade lead-jabbing incident that forged an elite dark humor shield."
+    }
+  ],
+
+  stories: [
+    {
+      id: "bedrot",
+      artImage: "images/art/bedrot.jpg",
       realImage: "images/post_4_DcwHOeJiqKg.jpg",
-      realLabelHe: "בסרטון המקורי ☕",
-      realLabelEn: "Original Video ☕",
+      realLabelHe: "בסרטון המקורי 👻",
+      realLabelEn: "Original Video 👻",
       tagHe: "שקט נפשי במיטה",
       tagEn: "Bed-Rotting & Peace",
-      titleHe: "קפה קר, שמיכה, ואפס רצון לצאת מהבית",
-      titleEn: "Iced Coffee, Heavy Blankets, and Zero Social Battery",
-      descHe: "למחוק את כל הרעש מסביב היה הדבר הכי טוב שעשיתי. לפעמים להישאר במיטה עם קפה קר ב-14:00 ולבהות בתקרה זו לא עצלנות – זה נטו הישרדות. אם מתעלמים מבעיות מספיק זמן הן אולי לא נעלמות, אבל לפחות יש מזגן ושקט.",
-      descEn: "Tuning out the global noise was the best move I ever made. Sometimes staying in bed with iced coffee staring at the ceiling isn't laziness — it's pure survival. If you ignore problems they might not disappear, but at least there's air conditioning."
+      titleHe: "בוריטו שמיכות, קפה קר, ואפס רצון לצאת",
+      titleEn: "Burrito Blanket, Iced Coffee & Zero Battery",
+      descHe: "למחוק את כל הרעש מסביב היה הדבר הכי טוב שעשיתי. להישאר במיטה עטופה כמו בוריטו ב-14:00 ולבהות בתקרה זו לא עצלנות – זה נטו הישרדות. אם מתעלמים מבעיות מספיק זמן הן אולי לא נעלמות, אבל לפחות יש מזגן ושקט.",
+      descEn: "Tuning out the global noise was the best move I ever made. Staying in bed swaddled like a burrito staring at the ceiling isn't laziness — it's survival. If you ignore problems they might not vanish, but at least there's air conditioning."
+    },
+    {
+      id: "balcony",
+      artImage: "images/art/balcony.jpg",
+      realImage: "images/post_6_DR2KOUtAh0b.jpg",
+      realLabelHe: "הרנט על החיים 🌇",
+      realLabelEn: "Life Rant Reel 🌇",
+      tagHe: "שקיעה בתל אביב",
+      tagEn: "Sunset Thoughts",
+      titleHe: "קפה קר במרפסת: איך שרדנו עד עכשיו?",
+      titleEn: "Balcony Cold Brew: How Did We Survive?",
+      descHe: "סוודר אוברסייז, קפה קר, ובריזה של שקיעה. לפעמים כל מה שצריך זה לשבת כמה דקות בשקט, בלי סמול-טוק מעיק ובלי אנשים ששואלים 'מה המטרות שלך לחמש השנים הקרובות'. שום מטרות, תודה.",
+      descEn: "Oversized sweater, cold brew, and twilight air. Sometimes all you need is five quiet minutes without awkward small talk or anyone asking about your 'five-year plan'. Zero plans, thank you."
     },
     {
       id: "protein",
@@ -187,7 +308,7 @@ const SITE_DATA = {
       titleHe: "חיכה שנתיים שלמות",
       titleEn: "Waited Two Whole Years",
       quoteHe: "הוא חיכה שנתיים שלמות לשלוף את זה. אנשים שומרים טינה טוב יותר מבנקים.",
-      quoteEn: "He waited two whole years to bring it up. People hoard petty grudges like treasure.",
+      quoteEn: "He waited two full years to bring it up. People hoard petty grudges like treasure.",
       captionHe: "חיכה שנתיים שלמות לשלוף את זה",
       captionEn: "Waited two whole years to pull that out",
       category: "dating",
@@ -420,6 +541,7 @@ const SITE_DATA = {
     he: {
       siteTitle: "ליה • notliya.com | הפינה של ליה",
       navLore: "הסיפורים",
+      navGallery: "גלריית איורים",
       navVault: "סרטונים",
       navOracle: "הפאנצ'ומטר",
       navClubhouse: "המועדון",
@@ -431,10 +553,14 @@ const SITE_DATA = {
       heroSub: "בלי אלגוריתמים מעצבנים ובלי פוזה. מקום אינטימי לשבת במיטה, לראות סרטונים, לצחוק על החיים ולפרוק חרדות.",
       btnVault: "לכל הסרטונים 🎬",
       btnOracle: "תני לי פאנץ' 🔮",
+      btnGallery: "גלריית האיורים 🎨",
       statTiktok: "בטיקטוק",
       statLikes: "לייקים",
       statIg: "באינסטגרם",
       statPeace: "רעשי רקע",
+      themeBarTitle: "🎨 פלטת צבעים:",
+      galleryTitle: "גלריית האיורים והעולם של ליה",
+      gallerySubtitle: "כל האילוסטרציות המקוריות שנוצרו במיוחד עבור ליה בסגנונות שונים.",
       storiesTitle: "הלור של ליה: מאיפה הכל התחיל?",
       storiesSubtitle: "האיורים המקוריים לצד הפריימים מהסרטונים האמיתיים. שקט נפשי, חלבון וטראומות ילדות.",
       vaultTitle: "סרטונים ששווה לראות שוב ושוב",
@@ -470,6 +596,7 @@ const SITE_DATA = {
     en: {
       siteTitle: "Liya • notliya.com | The Chill Corner",
       navLore: "Stories",
+      navGallery: "Artworks",
       navVault: "Videos",
       navOracle: "The Oracle",
       navClubhouse: "The Club",
@@ -481,10 +608,14 @@ const SITE_DATA = {
       heroSub: "No fake algorithms, no PR facade. An intimate space to sit in bed, watch reels, laugh at life, and unpack anxiety.",
       btnVault: "Watch Videos 🎬",
       btnOracle: "Ask The Oracle 🔮",
+      btnGallery: "Art Gallery 🎨",
       statTiktok: "on TikTok",
       statLikes: "Likes",
       statIg: "on Instagram",
       statPeace: "Background Noise",
+      themeBarTitle: "🎨 Color Palette:",
+      galleryTitle: "Original Artwork Gallery & Visual Lore",
+      gallerySubtitle: "Bespoke illustrations crafted exclusively for Liya across different creative styles.",
       storiesTitle: "The Lore: How Did We Get Here?",
       storiesSubtitle: "Original artwork paired with real video frames. Bed-rotting, whey protein, and childhood trauma.",
       vaultTitle: "Reels Worth Re-watching at 2 AM",
