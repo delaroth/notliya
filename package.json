@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "build": "echo 'Static site - no build required'"
   },
   "keywords": ["not.liya", "influencer", "dark-humor", "portfolio", "hebrew", "creator-hub"],
   "author": "Antigravity",
