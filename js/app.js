@@ -97,6 +97,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const forLiyaModal = document.getElementById('forLiyaModal');
   const liyaModalCloseBtn = document.getElementById('liyaModalCloseBtn');
   const copySiteLinkBtn = document.getElementById('copySiteLinkBtn');
+  const dismissNoteBtn = document.getElementById('dismissNoteBtn');
+
+  if (dismissNoteBtn) {
+    dismissNoteBtn.addEventListener('click', () => {
+      audio.pop();
+      const banner = dismissNoteBtn.closest('.creator-note-banner');
+      if (banner) {
+        banner.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+        banner.style.opacity = '0';
+        banner.style.transform = 'translateY(-10px)';
+        setTimeout(() => banner.parentElement.remove(), 260);
+      }
+    });
+  }
 
   // Vault
   const reelsGrid = document.getElementById('reelsGrid');
