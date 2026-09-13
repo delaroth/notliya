@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-i18n="siteTitle">ליה • not.liya | הפינה השקטה והצינית שלנו</title>
+  
+  <!-- Meta & OpenGraph -->
+  <meta name="description" content="האתר הרשמי של ליה (@not.liya) - פאנצ'ים שיכלתי לזרוק, אהבה שיכלתי לקבל, ובריאות הנפש בצל עולם מטורף." />
+  <meta property="og:title" content="ליה • @not.liya | Cozy & Cynical Clubhouse" />
+  <meta property="og:description" content="פאנצ'ים שיכלתי לזרוק ואהבה שיכלתי לקבל. הפינה האינטימית והצינית של ליה והקהילה שלה." />
+  <meta property="og:image" content="images/avatar.jpg" />
+  <meta property="og:type" content="website" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" type="image/jpeg" href="images/avatar.jpg" />
+</head>
+<body>
+
+  <!-- TOP MARQUEE TICKER -->
+  <aside class="marquee-wrapper" aria-label="Ticker">
+    <div class="marquee-content">
+      <span>פאנצ'ים שיכלתי לזרוק ואהבה שיכלתי לקבל</span>
+      <span>מחקה מיליוני עוקבים ברחבי העולם כדי לשמור על שפיות</span>
+      <span>לפחות אין לו אפילפסיה יותר (כי הוא לא כאן)</span>
+      <span>לאן לעזאזל הגענו כחברה</span>
+      <span>מרקיבה במיטה וגוללת רילים כהגנה עצמית</span>
+      <span>מאז שהבן זוג שלי נכנס לכושר הכל חלבון</span>
+      <span>טראומת עט-עיפרון 0.7 מ״מ ביסודי</span>
+      <span>יא חתיך אחד 🤌</span>
+      <span>Wiped the global noise to keep it real with the core community</span>
+    </div>
+  </aside>
+
+  <!-- STICKY NAVBAR -->
+  <header class="site-header">
+    <div class="container site-nav">
+      <div class="nav-brand">
+        <a href="#hero" style="display:flex; align-items:center; gap:0.75rem;">
+          <img src="images/avatar.jpg" alt="ליה - not.liya" class="brand-avatar" />
+          <div class="brand-info">
+            <h1>ליה <span class="live-indicator"><span class="live-dot"></span><span data-i18n="statusOnline">מחוברת ושופטת באהבה</span></span></h1>
+            <span class="brand-tag">@not.liya</span>
+          </div>
+        </a>
+      </div>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#mood" class="nav-link" data-i18n="navCheckin">איך אנחנו?</a></li>
+          <li><a href="#lore" class="nav-link" data-i18n="navBio">הסיפור שלי</a></li>
+          <li><a href="#vault" class="nav-link" data-i18n="navVault">סרטונים</a></li>
+          <li><a href="#sanity" class="nav-link" data-i18n="navSanity">עזרה ראשונה</a></li>
+          <li><a href="#cynic" class="nav-link" data-i18n="nav8ball">פאנצ'ומטר</a></li>
+          <li><a href="#pitch" class="nav-link" data-i18n="navPitch">הצבעה לאתר</a></li>
+          <li><a href="#confess" class="nav-link" data-i18n="navConfess">וידויים</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <!-- Direct "Hey Liya!" Button -->
+        <button id="forLiyaBtn" class="btn-for-liya" data-i18n="forLiyaBtn">
+          👋 ליה, כנסי לפה!
+        </button>
+
+        <!-- Sound Toggle -->
+        <button id="soundToggleBtn" class="btn-pill" title="Toggle Sound FX">
+          🔇 <span data-i18n="soundOff">השתק</span>
+        </button>
+
+        <!-- Language Toggle -->
+        <button id="langToggleBtn" class="btn-pill">
+          🌐 English
+        </button>
+
+        <!-- Social Icons -->
+        <a href="https://www.instagram.com/not.liya/" target="_blank" rel="noopener noreferrer" class="btn-social" title="Instagram @not.liya">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
+        </a>
+        <a href="https://www.tiktok.com/@not.liya" target="_blank" rel="noopener noreferrer" class="btn-social" title="TikTok @not.liya">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.33 6.33 0 0 0-1-.08A6.34 6.34 0 0 0 3 15.66a6.34 6.34 0 0 0 10.82 4.49 6.27 6.27 0 0 0 1.95-4.49V8.62a8.28 8.28 0 0 0 4.82 1.55V6.69z"/></svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section id="hero" class="hero-section">
+    <div class="container hero-grid">
+      <div class="hero-content">
+        <div class="hero-tagline">
+          <span>☕</span>
+          <span data-i18n="heroBadge">מהמיליונים בעולם לקפה אינטימי בישראל</span>
+        </div>
+
+        <h1 class="hero-title">
+          <span data-i18n="heroPunchline">פאנצ'ים שיכלתי לזרוק ואהבה שיכלתי לקבל.</span>
+        </h1>
+
+        <p class="hero-sub" data-i18n="heroSub">
+          בלי אלגוריתמים עולמיים ובלי זיוף. מחקתי את הרעש כדי להישאר עם האנשים האמיתיים. מקום בטוח לפרוק חרדות, לקטר על גברים ולצחוק על הכל.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#vault" class="btn-primary">
+            <span>🎬</span>
+            <span data-i18n="btnVault">צפו ברנטים</span>
+          </a>
+          <a href="#sanity" class="btn-secondary" style="border-color: rgba(255, 59, 105, 0.4); color: var(--accent-pink);">
+            <span>🛟</span>
+            <span data-i18n="btnSanity">עזרה ראשונה לנפש</span>
+          </a>
+          <a href="#pitch" class="btn-secondary">
+            <span>💡</span>
+            <span data-i18n="btnPitch">הצביעו לאתר הבא</span>
+          </a>
+        </div>
+
+        <!-- STATS -->
+        <div class="hero-stats">
+          <div class="stat-item">
+            <h3>65.1K+</h3>
+            <p data-i18n="statTiktok">עוקבים בטיקטוק</p>
+          </div>
+          <div class="stat-item">
+            <h3>3.4M+</h3>
+            <p data-i18n="statLikes">לייקים של אהבה</p>
+          </div>
+          <div class="stat-item">
+            <h3>23K+</h3>
+            <p data-i18n="statIg">הקהילה שלנו באינסטגרם</p>
+          </div>
+          <div class="stat-item">
+            <h3 style="color: var(--accent-pink);">0%</h3>
+            <p data-i18n="statPatience">סבלנות לאנשים מזויפים</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- HERO VISUAL -->
+      <div class="hero-visual">
+        <div class="avatar-card-wrapper">
+          <div class="avatar-glow"></div>
+          <div class="avatar-card">
+            <img src="images/avatar.jpg" alt="ליה - not.liya" class="avatar-img" />
+            <div class="avatar-card-overlay">
+              <div>
+                <span class="avatar-badge">✓ הפינה של ליה</span>
+                <p class="avatar-quote">"פאנצים שיכלתי לזרוק..."</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Floating Badges -->
+          <div class="floating-pill top-right">
+            <span>🤌</span>
+            <span>יא חתיך אחד</span>
+          </div>
+          <div class="floating-pill bottom-left">
+            <span>🫠</span>
+            <span>שחררי את הלסת</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DAILY MOOD CHECK-IN (INTERACTIVE COMMUNITY WIDGET) -->
+  <section id="mood" class="section" style="padding-top: 1rem; padding-bottom: 4rem;">
+    <div class="container">
+      <div class="section-header" style="margin-bottom: 2rem;">
+        <span class="section-tag">COMMUNITY CHECK-IN</span>
+        <h2 class="section-title" data-i18n="moodTitle">איך אנחנו מרגישות היום?</h2>
+        <p class="section-subtitle" data-i18n="moodSubtitle">
+          לחצי על המצב הנפשי הנוכחי שלך וקבלי תגובה מותאמת אישית מליה.
+        </p>
+      </div>
+
+      <div class="mood-wrapper">
+        <div id="moodSelector" class="mood-selector">
+          <!-- Rendered dynamically by app.js -->
+        </div>
+
+        <div id="moodResponseBox" class="mood-response-box active">
+          <img src="images/avatar.jpg" alt="ליה מגיבה" class="mood-response-avatar" />
+          <p id="moodResponseText" class="mood-response-text">
+            בחרת מצב רוח? לחצי על אחד הכפתורים למעלה וקבלי מנת ציניות מנחמת.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE LORE: THE RESET & MENTAL HEALTH -->
+  <section id="lore" class="section" style="background: rgba(10, 10, 15, 0.4);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">THE REAL STORY</span>
+        <h2 class="section-title" data-i18n="loreTitle">הריסטארט: למה לעזוב את העולם בשביל הבית?</h2>
+        <p class="section-subtitle" data-i18n="loreSubtitle">
+          פעם מיליוני עוקבים זרים, היום קהילה חמה, כנה וצינית שמבינה בדיוק כל ניואנס.
+        </p>
+      </div>
+
+      <div class="bento-grid">
+        <!-- Card 1: The Reset -->
+        <div class="bento-card bento-col-8">
+          <div class="bento-icon lime">🔄</div>
+          <h3>הריסטארט הגדול: שקט נפשי מעל מספרים ריקים</h3>
+          <p>
+            היה קל להמשיך לרדוף אחרי מספרים מנופחים בחו"ל, אבל ליה בחרה לעשות את מה שמעטים מעזים: למחוק, לאפס, ולחזור לדבר ישירות עם הקהל הישראלי שלה.
+            בלי להעמיד פנים, בלי לשחק אותה מנטורית של אושר, ובלי פילטרים. קשר קרוב, שיחות אמיתיות, והומור שחור שמרגיש כמו לשבת עם חברה טובה בסלון.
+          </p>
+        </div>
+
+        <!-- Card 2: Mental Health Reality Check -->
+        <div class="bento-card bento-col-4">
+          <div class="bento-icon pink">🫀</div>
+          <h3>בריאות הנפש בגובה העיניים</h3>
+          <p>
+            חרדות? אובר-ת'ינקינג ב-3 לפנות בוקר? רצון עמוק לא לקום מהמיטה שבוע?
+            ליה לא עושה מזה טאבו ולא מציעה לך 'לנשום עמוק אל תוך היקום'. היא פשוט צוחקת על זה ביחד איתנו.
+          </p>
+        </div>
+
+        <!-- Card 3: Pencil Trauma -->
+        <div class="bento-card bento-col-4">
+          <div class="bento-icon lime">✏️</div>
+          <h3>טראומת העט-עיפרון (0.7 מ"מ)</h3>
+          <p>
+            ילד בכיתה ד' שתקע לה שפיצים של עט עיפרון בישבן. הוכחה שכל הציניות והחושים המחודדים של ליה התחילו כהגנה עצמית עוד מבית הספר היסודי.
+          </p>
+        </div>
+
+        <!-- Card 4: Boyfriend & Gym Whey -->
+        <div class="bento-card bento-col-4">
+          <div class="bento-icon pink">💪</div>
+          <h3>החיים בצל אבקות חלבון</h3>
+          <p>
+            מאז שהבן זוג נכנס לכושר, כל שיחה בבית נמדדת בגרמים של חלבון איזולט, כוסות מים פושרים ושייקרים שלא נשטפו בזמן ומאיימים על שלום הבית.
+          </p>
+        </div>
+
+        <!-- Card 5: Diagnostic Bars -->
+        <div class="bento-card bento-col-4">
+          <div class="bento-icon cyan" style="color:var(--accent-cyan); border-color:rgba(0,240,255,0.3); background:rgba(0,240,255,0.1);">📊</div>
+          <h3>מדדי שפיות</h3>
+          <div class="diagnostic-list">
+            <div class="diagnostic-item">
+              <div class="diagnostic-meta">
+                <span>אותנטיות וקירבה</span>
+                <span>100%</span>
+              </div>
+              <div class="progress-track"><div class="progress-bar lime" style="width: 100%;"></div></div>
+            </div>
+            <div class="diagnostic-item">
+              <div class="diagnostic-meta">
+                <span>פילטר רגשי</span>
+                <span>0%</span>
+              </div>
+              <div class="progress-track"><div class="progress-bar pink" style="width: 3%;"></div></div>
+            </div>
+            <div class="diagnostic-item">
+              <div class="diagnostic-meta">
+                <span>הערכה לשקט ומיטה</span>
+                <span>98%</span>
+              </div>
+              <div class="progress-track"><div class="progress-bar cyan" style="width: 98%;"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EMERGENCY SANITY FIRST-AID -->
+  <section id="sanity" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">OVERWHELMED? CLICK HERE</span>
+        <h2 class="section-title" data-i18n="sanityTitle">כפתור עזרה ראשונה למתמוטטות קלות</h2>
+        <p class="section-subtitle" data-i18n="sanitySubtitle">
+          מרגישה מוצפת? החרדה קפצה לבקר? לחצי על הכפתור לקבלת סטירת מציאות מנחמת ומחבקת.
+        </p>
+      </div>
+
+      <div class="sanity-container">
+        <div class="sanity-display-box" id="sanityDisplayBox">
+          <p id="sanityQuote" class="sanity-quote">
+            "בדיקת מערכות: שחררי את הלסת. תורידי את הכתפיים מהאוזניים. קחי שלוק מים. תזכרי שאנחנו על סלע שמרחף בחלל וכל הדברים שמלחיצים אותך היום יהיו לא רלוונטיים עוד שנה."
+          </p>
+        </div>
+
+        <button id="sanityBtn" class="sanity-btn">
+          <span data-i18n="sanityBtn">תני לי פרופורציה עכשיו 🛟</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEO VAULT (REELS & MEMES) -->
+  <section id="vault" class="section" style="background: rgba(10, 10, 15, 0.4);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">THE ARCHIVE</span>
+        <h2 class="section-title" data-i18n="vaultTitle">כספת הסרטונים והפאנצ'ים</h2>
+        <p class="section-subtitle" data-i18n="vaultSubtitle">
+          כל הלהיטים הוויראליים, ההתמוטטויות העצביות והתובנות החברתיות שנשמרו לנצח. לחצו על סרטון כדי לפתוח אותו במלואו.
+        </p>
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div class="vault-controls">
+        <button class="filter-btn active" data-filter="all" data-i18n="filterAll">הכל (12)</button>
+        <button class="filter-btn" data-filter="dark" data-i18n="filterDark">הומור שחור</button>
+        <button class="filter-btn" data-filter="dating" data-i18n="filterDating">דייטים וגברים</button>
+        <button class="filter-btn" data-filter="rant" data-i18n="filterRant">רנטים ודעות</button>
+        <button class="filter-btn" data-filter="lifestyle" data-i18n="filterLifestyle">כאוס וחיים</button>
+      </div>
+
+      <!-- Reels Grid -->
+      <div id="reelsGrid" class="reels-grid">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- THE CYNIC 8-BALL / PUNCHLINE GENERATOR -->
+  <section id="cynic" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">AI ORACLE OF DESPAIR</span>
+        <h2 class="section-title" data-i18n="cynicTitle">הפאנצ'ומטר: מוקד ייעוץ אכזרי</h2>
+        <p class="section-subtitle" data-i18n="cynicSubtitle">
+          תקועים עם דילמה בחיים? בחרו בעיה או הקלידו, ותקבלו סטירת מציאות מליה.
+        </p>
+      </div>
+
+      <div class="cynic-container">
+        <div class="cynic-input-group">
+          <input 
+            type="text" 
+            id="cynicInput" 
+            class="cynic-input" 
+            placeholder="למשל: הבחור לא עונה לי כבר 6 שעות, מה לעשות?" 
+            data-i18n-placeholder="cynicPlaceholder"
+          />
+          <button id="cynicBtn" class="btn-primary" style="white-space: nowrap;">
+            <span data-i18n="cynicBtn">תני לי פאנץ' לפנים 💥</span>
+          </button>
+        </div>
+
+        <div id="cynicAnswerBox" class="cynic-answer-box">
+          <img src="images/avatar.jpg" alt="ליה מייעצת" class="cynic-avatar-thumb" />
+          <p id="cynicText" class="cynic-text">
+            "הוא חושב על המחמאה הזאת עד היום... וזאת הסיבה המדויקת למה אני מעדיפה שקט."
+          </p>
+          <div class="cynic-controls">
+            <button id="cynicCopyBtn" class="btn-pill">
+              📋 <span data-i18n="cynicCopy">העתק ציטוט</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMMUNITY FEATURE PITCH & POLL -->
+  <section id="pitch" class="section" style="background: rgba(10, 10, 15, 0.4);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">COMMUNITY BLUEPRINT</span>
+        <h2 class="section-title" data-i18n="pitchTitle">ליה שאלה: 'איזה אתר אתם רוצים?'</h2>
+        <p class="section-subtitle" data-i18n="pitchSubtitle">
+          הצביעו על הפיצ'רים שחייבים להיות באתר הרשמי הבא של ליה, או הציעו רעיון משלכם!
+        </p>
+      </div>
+
+      <!-- Poll Cards Container -->
+      <div id="pollContainer" class="poll-grid">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+
+      <!-- Custom Idea Pitch Box -->
+      <div class="custom-pitch-box">
+        <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 0.5rem;">💡 יש לכם רעיון פסיכי אחר?</h3>
+        <p style="color: var(--text-muted); font-size: 0.92rem;">
+          הצעות שיישלחו כאן יישמרו ישירות לפנקס הרעיונות של האתר כדי שליה תוכל לקרוא אותם.
+        </p>
+        <form id="customPitchForm" class="custom-pitch-form">
+          <input 
+            type="text" 
+            id="pitchInput" 
+            class="form-control" 
+            placeholder="כתבו כאן את הרעיון הגאוני שלכם..." 
+            data-i18n-placeholder="pitchInputPlaceholder" 
+            required 
+          />
+          <button type="submit" class="btn-primary" style="white-space: nowrap;">
+            <span data-i18n="pitchSubmitBtn">שלחו הצעה לליה</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONFESSIONS & COMPLAINTS -->
+  <section id="confess" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">ANONYMOUS TRAUMA DUMP</span>
+        <h2 class="section-title" data-i18n="confessTitle">תיבת תלונות ווידויים מביכים</h2>
+        <p class="section-subtitle" data-i18n="confessSubtitle">
+          קרה לכם משהו מביך בטירוף? שתפו אנונימית. אולי זה יגיע לריל הבא.
+        </p>
+      </div>
+
+      <div class="confess-grid">
+        <!-- Confessions Wall -->
+        <div id="confessWall" class="confess-wall">
+          <!-- Rendered dynamically by app.js -->
+        </div>
+
+        <!-- Submission Form -->
+        <div class="confess-form-card">
+          <h3>💬 זרקו וידוי לריק</h3>
+          <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 1.25rem;">
+            בלי שיפוטיות (בעצם, עם המון שיפוטיות, אבל לפחות אנונימי).
+          </p>
+          <form id="confessForm">
+            <div class="form-group">
+              <input 
+                type="text" 
+                id="confessAuthor" 
+                class="form-control" 
+                placeholder="כינוי (או השאירו ריק לאנונימי)" 
+                data-i18n-placeholder="confessAuthorPlaceholder" 
+              />
+            </div>
+            <div class="form-group">
+              <textarea 
+                id="confessText" 
+                class="form-control" 
+                placeholder="ספרו כאן את הסיפור המביך שלכם..." 
+                data-i18n-placeholder="confessPlaceholder" 
+                required
+              ></textarea>
+            </div>
+            <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">
+              <span data-i18n="confessSubmitBtn">שגרו לריק</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONCEPT MERCH DROP -->
+  <section id="merch" class="section" style="background: rgba(10, 10, 15, 0.4);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">FICTIONAL DROP</span>
+        <h2 class="section-title" data-i18n="merchTitle">דברים שהייתי מוכרת אם היה לי אכפת</h2>
+        <p class="section-subtitle" data-i18n="merchSubtitle">
+          קולקציית קפסולה פיקטיבית לציניקנים בלב ובנפש.
+        </p>
+      </div>
+
+      <div id="merchGrid" class="merch-grid">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h2>ליה • @not.liya</h2>
+          <p data-i18n="footerCredits">
+            נבנה באהבה, כבוד והמון ציניות עבור @not.liya. הבית האינטימי של הקהילה.
+          </p>
+        </div>
+
+        <div class="footer-socials">
+          <a href="https://www.instagram.com/not.liya/" target="_blank" rel="noopener noreferrer" class="btn-social-large">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
+            <span>Instagram (@not.liya)</span>
+          </a>
+          <a href="https://www.tiktok.com/@not.liya" target="_blank" rel="noopener noreferrer" class="btn-social-large">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.33 6.33 0 0 0-1-.08A6.34 6.34 0 0 0 3 15.66a6.34 6.34 0 0 0 10.82 4.49 6.27 6.27 0 0 0 1.95-4.49V8.62a8.28 8.28 0 0 0 4.82 1.55V6.69z"/></svg>
+            <span>TikTok (@not.liya)</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 @not.liya Clubhouse • All Quotes & Punchlines Reserved</span>
+        <a href="#hero" style="color: var(--accent-lime); font-weight: 700;">↑ חזרה למעלה / Back to top</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODAL 1: REEL VIEWER -->
+  <div id="reelModal" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <button id="modalCloseBtn" class="modal-close-btn" aria-label="Close modal">✕</button>
+      
+      <div class="modal-media">
+        <img id="modalImg" src="" alt="" />
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-meta">
+          <span id="modalTag" class="avatar-badge"></span>
+          <span id="modalViews" style="font-size:0.8rem; color:var(--text-muted); font-family:var(--font-mono);"></span>
+          <span id="modalLikes" style="font-size:0.8rem; color:var(--text-muted); font-family:var(--font-mono);"></span>
+        </div>
+
+        <h2 id="modalTitle" class="modal-title"></h2>
+
+        <div class="modal-quote-box">
+          <p id="modalQuote"></p>
+        </div>
+
+        <p id="modalCaption" class="modal-caption"></p>
+
+        <div class="modal-actions">
+          <a id="modalIgBtn" href="#" target="_blank" rel="noopener noreferrer" class="btn-primary" style="width:100%; justify-content:center;">
+            <span>Instagram</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: FOR LIYA (DIRECT MESSAGE) -->
+  <div id="forLiyaModal" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="liya-modal-card">
+      <button id="liyaModalCloseBtn" class="modal-close-btn" aria-label="Close modal">✕</button>
+
+      <span class="avatar-badge" style="margin-bottom: 1rem;">👑 ליה, זה נבנה בשבילך</span>
+      <h2>היי ליה, שאלת ובנינו! ✨</h2>
+      <p>
+        ראינו שביקשת מהעוקבים שלך רעיונות ואתר אינטרנט. רצינו לבנות משהו שמרגיש בדיוק כמוך: ציני, חם, אותנטי, בלי זיוף, עם כל הבדיחות הפנימיות מהסרטונים ומרחב אינטימי לקהילה שלך.
+      </p>
+
+      <div class="liya-perks-list">
+        <div class="liya-perk-item">
+          <span>🎯</span>
+          <span><strong>האתר הזה כולו שלך:</strong> אפשר להפוך אותו לבלוג אישי, למוקד פודקאסט, לחנות מרצ' אמיתית או לכל מה שתרצי.</span>
+        </div>
+        <div class="liya-perk-item">
+          <span>💌</span>
+          <span><strong>כל ההצעות שמורות:</strong> תיבת הרעיונות והווידויים כבר אוספת תגובות מהעוקבים שלך בזמן אמת.</span>
+        </div>
+        <div class="liya-perk-item">
+          <span>⚡</span>
+          <span><strong>קל לשינוי:</strong> אפשר לעצב, להוסיף סרטונים חדשים או לחבר לדומיין פרטי תוך דקות.</span>
+        </div>
+      </div>
+
+      <div class="liya-modal-actions">
+        <button id="copySiteLinkBtn" class="btn-primary">
+          <span>🔗</span>
+          <span>העתקי קישור לאתר לסטורי</span>
+        </button>
+        <button id="liyaCloseActionBtn" class="btn-secondary">
+          <span>סגור</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
