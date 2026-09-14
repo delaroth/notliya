@@ -34,13 +34,15 @@ module.exports = async function handler(req, res) {
   const isBulgaria = country === 'BG';
 
   if (req.method === 'GET') {
+    const posthogKey = String(process.env.POSTHOG_API_KEY || '').trim();
     return sendJson(200, {
       country,
       city,
       region,
       isIsrael,
       isBulgaria,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      posthogKey: posthogKey.startsWith('phc_') ? posthogKey : ''
     });
   }
 

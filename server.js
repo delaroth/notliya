@@ -38,6 +38,19 @@ try {
   console.error('[LOAD ERROR] js/data.js:', e.message);
 }
 
+function withPosthogKey(html) {
+  const key = String(process.env.POSTHOG_API_KEY || '').trim();
+  const host = String(process.env.POSTHOG_HOST || '').trim();
+  let inject = '';
+  if (key.startsWith('phc_')) {
+    inject += `window.POSTHOG_API_KEY=${JSON.stringify(key)};`;
+  }
+  if (host.startsWith('http')) {
+    inject += `window.POSTHOG_HOST=${JSON.stringify(host)};`;
+  }
+  return html.replace('/*__POSTHOG_KEY_INJECT__*/', inject);
+}
+
 // Preload Images Cache
 const imagesCache = {};
 const imageList = [
@@ -102,7 +115,7 @@ function requestHandler(req, res) {
       'Cache-Control': 'public, max-age=0, must-revalidate',
       'Access-Control-Allow-Origin': '*'
     });
-    res.end(indexHtml);
+    res.end(withPosthogKey(indexHtml));
     return;
   }
 

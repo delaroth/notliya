@@ -9,7 +9,8 @@
   <meta name="description" content="האתר של ליה (@not.liya) - פאנצ'ים שיכלתי לזרוק, אהבה שיכלתי לקבל, והפינה האינטימית של הקהילה." />
   <meta property="og:title" content="ליה • @not.liya | notliya.com" />
   <meta property="og:description" content="פאנצ'ים שיכלתי לזרוק ואהבה שיכלתי לקבל. נבנה עבור ליה." />
-  <meta property="og:image" content="images/art/balcony.jpg" />
+  <meta property="og:image" content="https://notliya.com/images/art/balcony.jpg" />
+  <meta property="og:url" content="https://notliya.com/" />
   <meta property="og:type" content="website" />
 
   <!-- Google Fonts: Warm Human Pairings + Handwritten Notes -->
@@ -26,22 +27,32 @@
         var urlKey = urlParams.get('posthog_key');
         if (urlKey) localStorage.setItem('posthog_project_key', urlKey);
 
-        var projectKey = window.POSTHOG_API_KEY || localStorage.getItem('posthog_project_key');
-        var apiHost = localStorage.getItem('posthog_host') || 'https://eu.i.posthog.com';
+        /*__POSTHOG_KEY_INJECT__*/
+        var apiHost = window.POSTHOG_HOST || localStorage.getItem('posthog_host') || 'https://eu.i.posthog.com';
 
-        if (projectKey && projectKey.startsWith('phc_')) {
+        function startPosthog(projectKey) {
+          if (window._posthogReady) return;
+          if (!projectKey || projectKey.indexOf('phc_') !== 0) return;
           window.posthog.init(projectKey, {
             api_host: apiHost,
             person_profiles: 'always',
             autocapture: true,
             capture_pageview: true,
             capture_pageleave: true,
+            persistence: 'localStorage+cookie',
             session_recording: {
               recordCrossOriginIframes: true,
-              maskAllInputs: false
+              maskAllInputs: true
             }
           });
           window._posthogReady = true;
+        }
+
+        startPosthog(window.POSTHOG_API_KEY || localStorage.getItem('posthog_project_key'));
+        if (!window._posthogReady) {
+          fetch('/api/track').then(function (r) { return r.json(); }).then(function (d) {
+            if (d && d.posthogKey) startPosthog(d.posthogKey);
+          }).catch(function () {});
         }
       } catch(e) {}
     })();
@@ -2387,7 +2398,7 @@ img {
           <p id="oracleQuoteText" class="oracle-quote-text">
             "הוא חושב על המחמאה הזאת עד היום... וזאת בדיוק הסיבה למה עדיף שקט."
           </p>
-          <button id="oracleCopyBtn" class="copy-link-btn" title="Copy to clipboard">
+          <button id="oracleCopyBtn" class="copy-link-btn" title="Copy to clipboard" data-i18n="oracleCopyBtn">
             📋 העתק ציטוט
           </button>
         </div>
@@ -2484,7 +2495,7 @@ img {
     <div class="modal-card">
       <button id="modalCloseBtn" class="modal-close" aria-label="Close">✕</button>
       <div class="modal-img-wrap">
-        <img id="modalImg" src="" alt="" />
+        <img id="modalImg" alt="" />
       </div>
       <div class="modal-info">
         <span id="modalTag" class="modal-pill"></span>
@@ -2548,6 +2559,9 @@ img {
         <button id="enterSiteBtn" class="btn-hero-ghost" style="justify-content: center; width: 100%;">
           תודה, כנסי לאתר ✨
         </button>
+        <button id="copySiteLinkBtn" class="btn-hero-ghost" style="justify-content: center; width: 100%;" data-i18n="copySiteLink">
+          העתיקי את notliya.com לסטורי 📋
+        </button>
       </div>
     </div>
   </div>
@@ -2566,7 +2580,7 @@ img {
   <div id="toastContainer" class="toast-shelf"></div>
 
   <!-- SCRIPTS -->
-  <script src="/js/data.js?v=2"></script>
-  <script src="/js/app.js?v=2"></script>
+  <script src="/js/data.js?v=3"></script>
+  <script src="/js/app.js?v=3"></script>
 </body>
 </html>

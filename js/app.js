@@ -183,7 +183,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (triggerAudio) {
       audio.ding();
       const currentThemeObj = SITE_DATA.themes.find(t => t.id === themeId);
-      const themeName = state.lang === 'he' ? currentThemeObj.nameHe : currentThemeObj.nameEn;
+      const themeName = currentThemeObj
+        ? (state.lang === 'he' ? currentThemeObj.nameHe : currentThemeObj.nameEn)
+        : themeId;
       showToast(state.lang === 'he' ? `ערכת נושא: ${themeName} ✨` : `Theme: ${themeName} ✨`);
       if (window.Telemetry && typeof window.Telemetry.trackThemeChange === 'function') {
         window.Telemetry.trackThemeChange(themeId);
@@ -1256,7 +1258,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (copySiteLinkBtn) {
     copySiteLinkBtn.addEventListener('click', () => {
       audio.ding();
-      const siteUrl = window.location.origin.includes('localhost') ? 'https://notliya.com' : window.location.href;
+      const siteUrl = 'https://notliya.com';
       navigator.clipboard.writeText(siteUrl).then(() => {
         showToast(state.lang === 'he' ? 'קישור האתר הועתק! 🤳' : 'Site link copied! 🤳');
       }).catch(() => {
