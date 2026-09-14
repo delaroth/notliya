@@ -47,7 +47,8 @@ module.exports = async function handler(req, res) {
       isBulgaria,
       timestamp: Date.now(),
       posthogKey: posthogReady ? posthogKey : '',
-      posthogStatus: posthogReady ? 'ready' : (posthogKey ? 'bad_prefix' : 'missing')
+      posthogStatus: posthogReady ? 'ready' : (posthogKey ? 'bad_prefix' : 'missing'),
+      posthogPrefix: posthogKey ? posthogKey.slice(0, 4) : ''
     });
   }
 
