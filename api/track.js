@@ -34,7 +34,11 @@ module.exports = async function handler(req, res) {
   const isBulgaria = country === 'BG';
 
   if (req.method === 'GET') {
-    const posthogKey = String(process.env.POSTHOG_API_KEY || '').trim();
+    let posthogKey = String(process.env.POSTHOG_API_KEY || '').trim();
+    if ((posthogKey.startsWith('"') && posthogKey.endsWith('"')) || (posthogKey.startsWith("'") && posthogKey.endsWith("'"))) {
+      posthogKey = posthogKey.slice(1, -1).trim();
+    }
+    const posthogReady = posthogKey.startsWith('phc_');
     return sendJson(200, {
       country,
       city,
@@ -42,7 +46,8 @@ module.exports = async function handler(req, res) {
       isIsrael,
       isBulgaria,
       timestamp: Date.now(),
-      posthogKey: posthogKey.startsWith('phc_') ? posthogKey : ''
+      posthogKey: posthogReady ? posthogKey : '',
+      posthogStatus: posthogReady ? 'ready' : (posthogKey ? 'bad_prefix' : 'missing')
     });
   }
 

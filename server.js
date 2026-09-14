@@ -38,8 +38,16 @@ try {
   console.error('[LOAD ERROR] js/data.js:', e.message);
 }
 
+function readPosthogKey() {
+  let key = String(process.env.POSTHOG_API_KEY || '').trim();
+  if ((key.startsWith('"') && key.endsWith('"')) || (key.startsWith("'") && key.endsWith("'"))) {
+    key = key.slice(1, -1).trim();
+  }
+  return key;
+}
+
 function withPosthogKey(html) {
-  const key = String(process.env.POSTHOG_API_KEY || '').trim();
+  const key = readPosthogKey();
   const host = String(process.env.POSTHOG_HOST || '').trim();
   let inject = '';
   if (key.startsWith('phc_')) {
